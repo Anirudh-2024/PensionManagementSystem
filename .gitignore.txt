@@ -1,0 +1,10 @@
+bin/
+obj/
+.vs/
+/PensionManagementBankingService/bin
+
+/PensionManagementBankingService/obj
+/PensionManagementPensionerService/bin
+/PensionManagementPensionerService/obj
+/PensionManagementUserLoginService/bin
+/PensionManagementUserLoginService/obj
