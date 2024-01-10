@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PensionManagementUserLoginService","PensionManagementUserLoginService\PensionManagementUserLoginService.csproj", "{A1AC5F74-5EB7-4F9B-B641-C93225F97DFE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PensionManagementUserLoginService", "PensionManagementUserLoginService\PensionManagementUserLoginService.csproj", "{A1AC5F74-5EB7-4F9B-B641-C93225F97DFE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PensionManagementBankingService", "PensionManagementBankingService\PensionManagementBankingService.csproj", "{B1AFD4EF-C554-43EF-A9DF-269B20DD52F8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PensionManagementBankingService", "PensionManagementBankingService\PensionManagementBankingService.csproj", "{B1AFD4EF-C554-43EF-A9DF-269B20DD52F8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PensionManagementPensionerService", "PensionManagementPensionerService\PensionManagementPensionerService.csproj", "{93AF0528-AF40-450A-9517-8E96A8ECF5A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{B1AFD4EF-C554-43EF-A9DF-269B20DD52F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1AFD4EF-C554-43EF-A9DF-269B20DD52F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1AFD4EF-C554-43EF-A9DF-269B20DD52F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93AF0528-AF40-450A-9517-8E96A8ECF5A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93AF0528-AF40-450A-9517-8E96A8ECF5A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93AF0528-AF40-450A-9517-8E96A8ECF5A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93AF0528-AF40-450A-9517-8E96A8ECF5A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
