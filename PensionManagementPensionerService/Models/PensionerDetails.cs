@@ -13,15 +13,15 @@ namespace PensionManagementPensionerService.Models
         public string Gender { get; set; }
         public string AadharNumber { get; set; }
         public string PhoneNumber { get; set; }
+        public string Address { get; set; }
+        public int Age { get; set; }
         public int UserId { get; set; }
+        public string PensionPlanId { get; set; }
 
         [ForeignKey("UserId")]
         public virtual UserDetails UserDetails { get; set; }
-        public string Address { get; set; }
-        public string PensionPlanId { get; set; }
 
         [ForeignKey("PensionPlanId")]
         public virtual PensionPlanDetails PensionPlanDetails { get; set; }
-        public int Age { get; set; }
     }
 }
