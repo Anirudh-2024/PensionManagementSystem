@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using PensionManagementUserLoginService.Models.Context;
+
 namespace PensionManagementUserLoginService
 {
     public class Program
@@ -13,6 +16,13 @@ namespace PensionManagementUserLoginService
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+
+            builder.Services.AddDbContext<AppDBContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("PMSConnectionString"));
+            });
+
 
             var app = builder.Build();
 

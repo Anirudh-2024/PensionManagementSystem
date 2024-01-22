@@ -15,7 +15,7 @@ namespace PensionManagementBankingService.Models
         public string PanNumber { get; set;}
 
     
-        public string PensionerId { get; set; }
+        public Guid PensionerId { get; set; }
 
         [ForeignKey("PensionerId")]
         public virtual PensionerDetails PensionerDetails { get; set; }
