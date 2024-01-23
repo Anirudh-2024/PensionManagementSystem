@@ -9,7 +9,8 @@ namespace PensionManagementUserLoginService.Models.Repository.Implementation
             throw new NotImplementedException();
         }
 
-        public Task<UserDetails> DeleteUser(int userId)
+       
+        public Task<UserDetails> DeleteUserById(int userId)
         {
             throw new NotImplementedException();
         }

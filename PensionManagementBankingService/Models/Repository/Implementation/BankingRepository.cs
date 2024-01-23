@@ -9,7 +9,9 @@ namespace PensionManagementBankingService.Models.Repository.Implementation
             throw new NotImplementedException();
         }
 
-        public Task<BankingDetails> DeleteBankingDetails(Guid bankId)
+
+
+        public Task<BankingDetails> DeleteBankingDetailsById(Guid bankId)
         {
             throw new NotImplementedException();
         }

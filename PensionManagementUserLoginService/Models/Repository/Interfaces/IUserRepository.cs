@@ -6,6 +6,6 @@
         Task<UserDetails> GetUserById(int userId);
         Task<UserDetails> AddUser(UserDetails userDetails);
         Task<UserDetails> UpdateUser(UserDetails userDetails);
-        Task<UserDetails> DeleteUser(int userId);
+        Task<UserDetails> DeleteUserById(int userId);
     }
 }

@@ -6,7 +6,7 @@
         Task<BankingDetails> GetBankingDetailsById(Guid bankId);
         Task<BankingDetails> UpdateBankingDetails(BankingDetails bankingDetails);
         Task<BankingDetails> AddBankingDetails(BankingDetails bankingDetails);
-        Task<BankingDetails> DeleteBankingDetails(Guid bankId);
+        Task<BankingDetails> DeleteBankingDetailsById(Guid bankId);
 
         
     }
