@@ -12,6 +12,6 @@ namespace PensionManagementPensionerService.Models.Repository.Interfaces
 
         Task<PensionPlanDetails> UpdatePensionPlan(PensionPlanDetails pensionPlanDetails);
 
-        Task<PensionPlanDetails> DeletePensionPlan(Guid pensionPlanId);
+        Task<PensionPlanDetails> DeletePensionPlanById(Guid pensionPlanId);
     }
 }

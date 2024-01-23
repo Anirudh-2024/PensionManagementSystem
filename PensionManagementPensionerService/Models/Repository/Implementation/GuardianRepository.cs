@@ -9,12 +9,12 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
             throw new NotImplementedException();
         }
 
-        public Task<GuardianDetails> DeleteGuardian(Guid guardianId)
+        public Task<GuardianDetails> DeleteGuardianById(Guid guardianId)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IEnumerable<GuardianDetails>> GetAllGuardians()
+        public Task<IEnumerable<GuardianDetails>> GetAllGuardianDetails()
         {
             throw new NotImplementedException();
         }

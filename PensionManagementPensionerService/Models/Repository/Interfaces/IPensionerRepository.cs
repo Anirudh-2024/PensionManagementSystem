@@ -2,14 +2,14 @@
 {
     public interface IPensionerRepository
     {
-        Task<IEnumerable<PensionerDetails>> GetAllPensioners();
+        Task<IEnumerable<PensionerDetails>> GetAllPensionerDetails();
         Task<PensionerDetails> GetPensionerDetailsById(Guid pensionerId);
 
         Task<PensionerDetails> UpdatePensionerDetails(PensionerDetails pensionerDetails);
 
         Task<PensionerDetails> AddPensionerDetails(PensionerDetails pensionerDetails);  
 
-        Task<PensionerDetails> DeletePensionerDetails(Guid pensionerId);
+        Task<PensionerDetails> DeletePensionerDetailsById(Guid pensionerId);
             
     }
 }

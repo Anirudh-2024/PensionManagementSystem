@@ -2,7 +2,7 @@
 {
     public interface IGuardianRepository
     {
-        Task<IEnumerable<GuardianDetails>> GetAllGuardians();
+        Task<IEnumerable<GuardianDetails>> GetAllGuardianDetails();
 
         Task<GuardianDetails> GetGuardianById(Guid guardianId);
 
@@ -10,6 +10,6 @@
 
         Task<GuardianDetails> UpdateGuardian(GuardianDetails guardianDetails);
 
-        Task<GuardianDetails> DeleteGuardian(Guid guardianId);
+        Task<GuardianDetails> DeleteGuardianById(Guid guardianId);
     }
 }
