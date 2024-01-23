@@ -6,7 +6,7 @@ namespace PensionManagementPensionerService.Models.Repository.Interfaces
     {
         Task<IEnumerable<PensionPlanDetails>> GetAllPensionPlans();
 
-        Task<PensionPlanDetails> GetPensionPlanById(int pensionPlanId);
+        Task<PensionPlanDetails> GetPensionPlanById(Guid pensionPlanId);
 
         Task<PensionPlanDetails> AddPensionPlan(PensionPlanDetails pensionPlanDetails);
 
