@@ -1,32 +1,62 @@
-﻿using PensionManagementPensionerService.Models.Repository.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using PensionManagementPensionerService.Models.Context;
+using PensionManagementPensionerService.Models.Repository.Interfaces;
 
 namespace PensionManagementPensionerService.Models.Repository.Implementation
 {
     public class GuardianRepository : IGuardianRepository
     {
-        public Task<GuardianDetails> AddGuardian(GuardianDetails guardianDetails)
+        private readonly AppDbContext _appDbContext;
+
+        public GuardianRepository(AppDbContext appDbContext)
         {
-            throw new NotImplementedException();
+            this._appDbContext = appDbContext;
+        }
+        public async Task<GuardianDetails> AddGuardian(GuardianDetails guardianDetails)
+        {
+            var result = await _appDbContext.GuardianDetails.AddAsync(guardianDetails);
+            await _appDbContext.SaveChangesAsync();
+            return result.Entity;
         }
 
-        public Task<GuardianDetails> DeleteGuardianById(Guid guardianId)
+        public async Task<GuardianDetails> DeleteGuardianById(Guid guardianId)
         {
-            throw new NotImplementedException();
+            var result = await _appDbContext.GuardianDetails.FirstOrDefaultAsync(id => id.GuardianId == guardianId);
+            if (result != null)
+            {
+                _appDbContext.GuardianDetails.Remove(result);
+                await _appDbContext.SaveChangesAsync();
+                return result;
+            }
+            return null;
         }
 
-        public Task<IEnumerable<GuardianDetails>> GetAllGuardianDetails()
+        public async Task<IEnumerable<GuardianDetails>> GetAllGuardianDetails()
         {
-            throw new NotImplementedException();
+            return await _appDbContext.GuardianDetails.ToListAsync();
         }
 
-        public Task<GuardianDetails> GetGuardianById(Guid guardianId)
+        public async Task<GuardianDetails> GetGuardianById(Guid guardianId)
         {
-            throw new NotImplementedException();
+            return await _appDbContext.GuardianDetails.FirstOrDefaultAsync(id => id.GuardianId == guardianId);
         }
 
-        public Task<GuardianDetails> UpdateGuardian(GuardianDetails guardianDetails)
+        public async Task<GuardianDetails> UpdateGuardian(GuardianDetails guardianDetails)
         {
-            throw new NotImplementedException();
+            var result = await _appDbContext.GuardianDetails.FirstOrDefaultAsync(id => id.GuardianId == guardianDetails.GuardianId);
+            if (result != null)
+            {
+                result.GuardianName= guardianDetails.GuardianName;
+                result.Relation = guardianDetails.Relation;
+                result.PhoneNumber = guardianDetails.PhoneNumber;
+                result.Age = guardianDetails.Age;
+                result.Gender = guardianDetails.Gender;
+                result.DateOfBirth = guardianDetails.DateOfBirth;
+                await _appDbContext.SaveChangesAsync();
+                return result;
+
+            }
+            return null;
         }
     }
 }
