@@ -1,34 +1,64 @@
-﻿using PensionManagementBankingService.Models.Repository.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using PensionManagementBankingService.Models.Context;
+using PensionManagementBankingService.Models.Repository.Interfaces;
+
 
 namespace PensionManagementBankingService.Models.Repository.Implementation
 {
     public class BankingRepository : IBankingRepository
     {
-        public Task<BankingDetails> AddBankingDetails(BankingDetails bankingDetails)
+
+        private readonly AppDBContext _appDbContext;
+        public BankingRepository(AppDBContext appDBContext)
         {
-            throw new NotImplementedException();
+            _appDbContext = appDBContext;
+        }
+
+        public async Task<BankingDetails> AddBankingDetails(BankingDetails bankingDetails)
+        {
+            var result = await _appDbContext.BankingDetails.AddAsync(bankingDetails);
+            await _appDbContext.SaveChangesAsync();
+            return result.Entity;
         }
 
 
-
-        public Task<BankingDetails> DeleteBankingDetailsById(Guid bankId)
+        public async Task<BankingDetails> DeleteBankingDetailsById(Guid bankId)
         {
-            throw new NotImplementedException();
+            var result = await _appDbContext.BankingDetails.FirstOrDefaultAsync(id => id.BankId == bankId);
+            if (result != null)
+            {
+                _appDbContext.BankingDetails.Remove(result);
+                await _appDbContext.SaveChangesAsync();
+                return result;
+            }
+            return null;
         }
 
-        public Task<IEnumerable<BankingDetails>> GetAllBankingDetails()
+        public async Task<IEnumerable<BankingDetails>> GetAllBankingDetails()
         {
-            throw new NotImplementedException();
+            return await _appDbContext.BankingDetails.ToListAsync();
         }
 
-        public Task<BankingDetails> GetBankingDetailsById(Guid bankId)
+        public async Task<BankingDetails> GetBankingDetailsById(Guid bankId)
         {
-            throw new NotImplementedException();
+            return await _appDbContext.BankingDetails.FirstOrDefaultAsync(id => id.BankId == bankId);
         }
 
-        public Task<BankingDetails> UpdateBankingDetails(BankingDetails bankingDetails)
+        public async Task<BankingDetails> UpdateBankingDetails(BankingDetails bankingDetails)
         {
-            throw new NotImplementedException();
+            var result = await _appDbContext.BankingDetails.FirstOrDefaultAsync(id => id.BankId == bankingDetails.BankId);
+            if (result != null)
+            {
+                result.PanNumber = bankingDetails.PanNumber;
+                result.AccountNumber = bankingDetails.AccountNumber;
+                result.BranchName = bankingDetails.BranchName;
+                result.BankName = bankingDetails.BankName;
+                result.IfscCode = bankingDetails.IfscCode;
+                await _appDbContext.SaveChangesAsync();
+                return result;
+
+            }
+            return null;
         }
     }
 }
