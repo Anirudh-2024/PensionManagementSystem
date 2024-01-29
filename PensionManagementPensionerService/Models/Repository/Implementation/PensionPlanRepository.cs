@@ -1,32 +1,55 @@
-﻿using PensionManagementPensionerService.Models.Repository.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using PensionManagementPensionerService.Models.Context;
+using PensionManagementPensionerService.Models.Repository.Interfaces;
 
 namespace PensionManagementPensionerService.Models.Repository.Implementation
 {
     public class PensionPlanRepository : IPensionPlanRepository
     {
-        public Task<PensionPlanDetails> AddPensionPlan(PensionPlanDetails pensionPlanDetails)
+        private readonly AppDbContext _appDbContext;
+
+        public PensionPlanRepository(AppDbContext appDbContext)
         {
-            throw new NotImplementedException();
+            _appDbContext = appDbContext;
+        }
+        public async Task<PensionPlanDetails> AddPensionPlan(PensionPlanDetails pensionPlanDetails)
+        {
+            var result = await _appDbContext.PensionPlanDetails.AddAsync(pensionPlanDetails);
+            await _appDbContext.SaveChangesAsync();
+            return result.Entity;
         }
 
-        public Task<PensionPlanDetails> DeletePensionPlanById(Guid pensionPlanId)
+        public async void DeletePensionPlanById(Guid pensionPlanId)
         {
-            throw new NotImplementedException();
+            var result = await _appDbContext.PensionPlanDetails.FirstOrDefaultAsync(id => id.PensionPlanId == pensionPlanId);
+            _appDbContext.PensionPlanDetails.Remove(result); 
         }
 
-        public Task<IEnumerable<PensionPlanDetails>> GetAllPensionPlans()
+        public async Task<IEnumerable<PensionPlanDetails>> GetAllPensionPlans()
         {
-            throw new NotImplementedException();
+            return await _appDbContext.PensionPlanDetails.ToListAsync();
         }
 
-        public Task<PensionPlanDetails> GetPensionPlanById(int pensionPlanId)
+        public async Task<PensionPlanDetails> GetPensionPlanById(Guid pensionPlanId)
         {
-            throw new NotImplementedException();
+            return await _appDbContext.PensionPlanDetails.FirstOrDefaultAsync(id => id.PensionPlanId == pensionPlanId);
         }
 
-        public Task<PensionPlanDetails> UpdatePensionPlan(PensionPlanDetails pensionPlanDetails)
+        public async Task<PensionPlanDetails> UpdatePensionPlanById(Guid pensionPlanId, PensionPlanDetails pensionPlanDetails)
         {
-            throw new NotImplementedException();
+            var result = await _appDbContext.PensionPlanDetails.FirstOrDefaultAsync(id => id.PensionPlanId == pensionPlanId);
+            if (result != null)
+            {
+               result.PensionPlanName = pensionPlanDetails.PensionPlanName;
+               result.Amount = pensionPlanDetails.Amount;  
+               result.EndDate = pensionPlanDetails.EndDate;
+               result.StartDate = pensionPlanDetails.StartDate;
+               result.PensionDetails = pensionPlanDetails.PensionDetails;
+               await _appDbContext.SaveChangesAsync();
+               return result;
+
+            }
+            return null;
         }
     }
 }

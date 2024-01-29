@@ -8,8 +8,8 @@
 
         Task<GuardianDetails> AddGuardian(GuardianDetails guardianDetails);
 
-        Task<GuardianDetails> UpdateGuardian(GuardianDetails guardianDetails);
+        Task<GuardianDetails> UpdateGuardianById(Guid guardianId, GuardianDetails guardianDetails);
 
-        Task<GuardianDetails> DeleteGuardianById(Guid guardianId);
+        void DeleteGuardianById(Guid guardianId);
     }
 }
