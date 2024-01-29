@@ -10,8 +10,8 @@ namespace PensionManagementPensionerService.Models.Repository.Interfaces
 
         Task<PensionPlanDetails> AddPensionPlan(PensionPlanDetails pensionPlanDetails);
 
-        Task<PensionPlanDetails> UpdatePensionPlan(PensionPlanDetails pensionPlanDetails);
+        Task<PensionPlanDetails> UpdatePensionPlanById(Guid pensionPlanId, PensionPlanDetails pensionPlanDetails);
 
-        Task<PensionPlanDetails> DeletePensionPlanById(Guid pensionPlanId);
+        void DeletePensionPlanById(Guid pensionPlanId);
     }
 }

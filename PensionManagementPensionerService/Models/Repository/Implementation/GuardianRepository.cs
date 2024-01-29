@@ -10,25 +10,19 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
 
         public GuardianRepository(AppDbContext appDbContext)
         {
-            this._appDbContext = appDbContext;
+            _appDbContext = appDbContext;
         }
         public async Task<GuardianDetails> AddGuardian(GuardianDetails guardianDetails)
-        {
+        {   
             var result = await _appDbContext.GuardianDetails.AddAsync(guardianDetails);
             await _appDbContext.SaveChangesAsync();
             return result.Entity;
         }
 
-        public async Task<GuardianDetails> DeleteGuardianById(Guid guardianId)
+        public async void DeleteGuardianById(Guid guardianId)
         {
             var result = await _appDbContext.GuardianDetails.FirstOrDefaultAsync(id => id.GuardianId == guardianId);
-            if (result != null)
-            {
-                _appDbContext.GuardianDetails.Remove(result);
-                await _appDbContext.SaveChangesAsync();
-                return result;
-            }
-            return null;
+            _appDbContext.GuardianDetails.Remove(result);         
         }
 
         public async Task<IEnumerable<GuardianDetails>> GetAllGuardianDetails()
@@ -41,21 +35,20 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
             return await _appDbContext.GuardianDetails.FirstOrDefaultAsync(id => id.GuardianId == guardianId);
         }
 
-        public async Task<GuardianDetails> UpdateGuardian(GuardianDetails guardianDetails)
+        public async Task<GuardianDetails> UpdateGuardianById(Guid guardianId, GuardianDetails guardianDetails)
         {
-            var result = await _appDbContext.GuardianDetails.FirstOrDefaultAsync(id => id.GuardianId == guardianDetails.GuardianId);
+            var result = await _appDbContext.GuardianDetails.FirstOrDefaultAsync(id => id.GuardianId == guardianId);
             if (result != null)
             {
-                result.GuardianName= guardianDetails.GuardianName;
-                result.Relation = guardianDetails.Relation;
-                result.PhoneNumber = guardianDetails.PhoneNumber;
-                result.Age = guardianDetails.Age;
-                result.Gender = guardianDetails.Gender;
-                result.DateOfBirth = guardianDetails.DateOfBirth;
-                await _appDbContext.SaveChangesAsync();
-                return result;
-
-            }
+               result.GuardianName= guardianDetails.GuardianName;
+               result.Relation = guardianDetails.Relation;
+               result.PhoneNumber = guardianDetails.PhoneNumber;
+               result.Age = guardianDetails.Age;
+               result.Gender = guardianDetails.Gender;
+               result.DateOfBirth = guardianDetails.DateOfBirth;
+               await _appDbContext.SaveChangesAsync();
+               return result;
+           }
             return null;
         }
     }

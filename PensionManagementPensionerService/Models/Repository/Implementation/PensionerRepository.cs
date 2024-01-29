@@ -12,7 +12,7 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
 
         public PensionerRepository(AppDbContext appDbContext)
         {
-            this._appDbContext = appDbContext;
+            _appDbContext = appDbContext;
         }
 
         public async Task<PensionerDetails> AddPensionerDetails(PensionerDetails pensionerDetails)
@@ -22,16 +22,10 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
             return result.Entity;
         }
 
-        public async Task<PensionerDetails> DeletePensionerDetailsById(Guid pensionerId)
+        public async void DeletePensionerDetailsById(Guid pensionerId)
         {
             var result = await _appDbContext.PensionerDetails.FirstOrDefaultAsync(id => id.PensionerId == pensionerId);
-            if (result != null)
-            {
-                _appDbContext.PensionerDetails.Remove(result);
-                await _appDbContext.SaveChangesAsync();
-                return result;
-            }
-            return null;
+            _appDbContext.PensionerDetails.Remove(result);     
         }
 
         public async Task<IEnumerable<PensionerDetails>> GetAllPensionerDetails()
@@ -44,23 +38,23 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
             return await _appDbContext.PensionerDetails.FirstOrDefaultAsync(id => id.PensionerId == pensionerId);
         }
 
-        public async Task<PensionerDetails> UpdatePensionerDetails(PensionerDetails pensionerDetails)
+        public async Task<PensionerDetails> UpdatePensionerDetailsById(Guid pensionerId, PensionerDetails pensionerDetails)
         {
-            var result = await _appDbContext.PensionerDetails.FirstOrDefaultAsync(id => id.PensionerId == pensionerDetails.PensionerId);
+            var result = await _appDbContext.PensionerDetails.FirstOrDefaultAsync(id => id.PensionerId == pensionerId);
             if (result != null)
-            {
+              {
                 result.FullName = pensionerDetails.FullName;
                 result.PhoneNumber = pensionerDetails.PhoneNumber;
                 result.DateOfBirth = pensionerDetails.DateOfBirth;
                 result.Gender = pensionerDetails.Gender;
-                result.Age = pensionerDetails.Age;
-                result.Address = pensionerDetails.Address;
-                result.AadharNumber= pensionerDetails.AadharNumber;
-                await _appDbContext.SaveChangesAsync();
-                return result;
+                 result.Age = pensionerDetails.Age;
+                 result.Address = pensionerDetails.Address;
+                 result.AadharNumber= pensionerDetails.AadharNumber;
+               await _appDbContext.SaveChangesAsync();
+               return result;
 
-            }
-            return null;
+           }
+           return null;
         }
     }
 }

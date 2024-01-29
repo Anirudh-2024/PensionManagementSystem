@@ -10,7 +10,7 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
 
         public PensionPlanRepository(AppDbContext appDbContext)
         {
-            this._appDbContext = appDbContext;
+            _appDbContext = appDbContext;
         }
         public async Task<PensionPlanDetails> AddPensionPlan(PensionPlanDetails pensionPlanDetails)
         {
@@ -19,16 +19,10 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
             return result.Entity;
         }
 
-        public async Task<PensionPlanDetails> DeletePensionPlanById(Guid pensionPlanId)
+        public async void DeletePensionPlanById(Guid pensionPlanId)
         {
             var result = await _appDbContext.PensionPlanDetails.FirstOrDefaultAsync(id => id.PensionPlanId == pensionPlanId);
-            if (result != null)
-            {
-                _appDbContext.PensionPlanDetails.Remove(result);
-                await _appDbContext.SaveChangesAsync();
-                return result;
-            }
-            return null;
+            _appDbContext.PensionPlanDetails.Remove(result); 
         }
 
         public async Task<IEnumerable<PensionPlanDetails>> GetAllPensionPlans()
@@ -41,18 +35,18 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
             return await _appDbContext.PensionPlanDetails.FirstOrDefaultAsync(id => id.PensionPlanId == pensionPlanId);
         }
 
-        public async Task<PensionPlanDetails> UpdatePensionPlan(PensionPlanDetails pensionPlanDetails)
+        public async Task<PensionPlanDetails> UpdatePensionPlanById(Guid pensionPlanId, PensionPlanDetails pensionPlanDetails)
         {
-            var result = await _appDbContext.PensionPlanDetails.FirstOrDefaultAsync(id => id.PensionPlanId == pensionPlanDetails.PensionPlanId);
+            var result = await _appDbContext.PensionPlanDetails.FirstOrDefaultAsync(id => id.PensionPlanId == pensionPlanId);
             if (result != null)
             {
-                result.PensionPlanName = pensionPlanDetails.PensionPlanName;
-                result.Amount = pensionPlanDetails.Amount;  
-                result.EndDate = pensionPlanDetails.EndDate;
-                result.StartDate = pensionPlanDetails.StartDate;
-                result.PensionDetails = pensionPlanDetails.PensionDetails;
-                await _appDbContext.SaveChangesAsync();
-                return result;
+               result.PensionPlanName = pensionPlanDetails.PensionPlanName;
+               result.Amount = pensionPlanDetails.Amount;  
+               result.EndDate = pensionPlanDetails.EndDate;
+               result.StartDate = pensionPlanDetails.StartDate;
+               result.PensionDetails = pensionPlanDetails.PensionDetails;
+               await _appDbContext.SaveChangesAsync();
+               return result;
 
             }
             return null;
