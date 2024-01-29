@@ -1,8 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PensionManagementPensionerService.Models.Context;
 using PensionManagementPensionerService.Models.Repository.Interfaces;
-using PensionManagementUserLoginService.Models;
-using PensionManagementUserLoginService.Models.Context;
 
 namespace PensionManagementPensionerService.Models.Repository.Implementation
 {
