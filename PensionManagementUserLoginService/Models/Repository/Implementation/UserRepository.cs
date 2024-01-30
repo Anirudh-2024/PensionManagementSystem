@@ -24,16 +24,15 @@ namespace PensionManagementUserLoginService.Models.Repository.Implementation
         }
 
 
-        public async Task<UserDetails> DeleteUserById(int userId)
+        public void DeleteUserById(int userId)
         {
-            var result = await _appDbContext.UserDetails.FirstOrDefaultAsync(id => id.UserId == userId);
-            if (result != null)
-            {
+            var result =  _appDbContext.UserDetails.FirstOrDefault(id => id.UserId == userId);
+           
                 _appDbContext.UserDetails.Remove(result);
-                await _appDbContext.SaveChangesAsync();
-                return result;
-            }
-            return null;
+                _appDbContext.SaveChanges();
+                
+           
+           
         }
 
         public async Task<IEnumerable<UserDetails>> GetAllUsers()
@@ -47,9 +46,9 @@ namespace PensionManagementUserLoginService.Models.Repository.Implementation
             return await _appDbContext.UserDetails.FirstOrDefaultAsync(id => id.UserId == userId);
         }
 
-        public async Task<UserDetails> UpdateUser(UserDetails userDetails)
+        public async Task<UserDetails> UpdateUserById(int userId ,UserDetails userDetails)
         {
-            var result = await _appDbContext.UserDetails.FirstOrDefaultAsync(id => id.UserId == userDetails.UserId);
+            var result = await _appDbContext.UserDetails.FirstOrDefaultAsync(id => id.UserId == userId);
             if (result != null)
             {
                 result.Email = userDetails.Email;

@@ -16,22 +16,21 @@ namespace PensionManagementBankingService.Models.Repository.Implementation
 
         public async Task<BankingDetails> AddBankingDetails(BankingDetails bankingDetails)
         {
+
             var result = await _appDbContext.BankingDetails.AddAsync(bankingDetails);
             await _appDbContext.SaveChangesAsync();
-            return result.Entity;
+            return bankingDetails;
         }
 
 
-        public async Task<BankingDetails> DeleteBankingDetailsById(Guid bankId)
+        public void  DeleteBankingDetailsById(Guid bankId)
         {
-            var result = await _appDbContext.BankingDetails.FirstOrDefaultAsync(id => id.BankId == bankId);
-            if (result != null)
-            {
+            var result =_appDbContext.BankingDetails.FirstOrDefault(id => id.BankId == bankId);
+          
                 _appDbContext.BankingDetails.Remove(result);
-                await _appDbContext.SaveChangesAsync();
-                return result;
-            }
-            return null;
+                _appDbContext.SaveChanges();
+                
+            
         }
 
         public async Task<IEnumerable<BankingDetails>> GetAllBankingDetails()
@@ -44,9 +43,9 @@ namespace PensionManagementBankingService.Models.Repository.Implementation
             return await _appDbContext.BankingDetails.FirstOrDefaultAsync(id => id.BankId == bankId);
         }
 
-        public async Task<BankingDetails> UpdateBankingDetails(BankingDetails bankingDetails)
+        public async Task<BankingDetails> UpdateBankingDetailsById(Guid bankId ,BankingDetails bankingDetails)
         {
-            var result = await _appDbContext.BankingDetails.FirstOrDefaultAsync(id => id.BankId == bankingDetails.BankId);
+            var result = await _appDbContext.BankingDetails.FirstOrDefaultAsync(id => id.BankId == bankId);
             if (result != null)
             {
                 result.PanNumber = bankingDetails.PanNumber;
