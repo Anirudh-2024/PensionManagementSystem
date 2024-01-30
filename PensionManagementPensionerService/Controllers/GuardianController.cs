@@ -65,9 +65,8 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
-                var result = await _guardianRepository.GetGuardianById(guardianId);
                 await _guardianRepository.UpdateGuardianById(guardianId, guardianDetails);
-                return Ok(result);
+                return Ok(guardianDetails);
             }
             catch (Exception ex)
             {

@@ -65,9 +65,8 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
-                var result = await _pensionerRepository.GetPensionerDetailsById(pensionerId);
                 await _pensionerRepository.UpdatePensionerDetailsById(pensionerId, pensionerDetails);
-                return Ok(result);
+                return Ok(pensionerDetails);
             }
             catch (Exception ex)
             {
