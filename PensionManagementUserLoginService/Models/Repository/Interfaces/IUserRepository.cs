@@ -5,7 +5,7 @@
         Task<IEnumerable<UserDetails>> GetAllUsers();
         Task<UserDetails> GetUserById(int userId);
         Task<UserDetails> AddUser(UserDetails userDetails);
-        Task<UserDetails> UpdateUser(UserDetails userDetails);
-        Task<UserDetails> DeleteUserById(int userId);
+        Task<UserDetails> UpdateUserById(int userId,UserDetails userDetails);
+       void DeleteUserById(int userId);
     }
 }

@@ -1,34 +1,66 @@
-﻿using PensionManagementUserLoginService.Models.Repository.Interfaces;
+﻿
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
+using PensionManagementUserLoginService.Models.Context;
+using PensionManagementUserLoginService.Models.Repository.Interfaces;
 
 namespace PensionManagementUserLoginService.Models.Repository.Implementation
 {
     public class UserRepository : IUserRepository
     {
-        public Task<UserDetails> AddUser(UserDetails userDetails)
+        private readonly AppDBContext _appDbContext;
+        public UserRepository(AppDBContext appDBContext)
         {
-            throw new NotImplementedException();
+            _appDbContext = appDBContext;
+        }
+        public async Task<UserDetails> AddUser(UserDetails userDetails)
+        {
+
+
+            var result = await _appDbContext.UserDetails.AddAsync(userDetails);
+            await _appDbContext.SaveChangesAsync();
+
+            return result.Entity;
         }
 
-       
-        public Task<UserDetails> DeleteUserById(int userId)
+
+        public void DeleteUserById(int userId)
         {
-            throw new NotImplementedException();
+            var result =  _appDbContext.UserDetails.FirstOrDefault(id => id.UserId == userId);
+           
+                _appDbContext.UserDetails.Remove(result);
+                _appDbContext.SaveChanges();
+                
+           
+           
         }
 
-        public Task<IEnumerable<UserDetails>> GetAllUsers()
+        public async Task<IEnumerable<UserDetails>> GetAllUsers()
         {
-            throw new NotImplementedException();
+            return await _appDbContext.UserDetails.ToListAsync();
         }
 
 
-        public Task<UserDetails> GetUserById(int userId)
+        public async Task<UserDetails> GetUserById(int userId)
         {
-            throw new NotImplementedException();
+            return await _appDbContext.UserDetails.FirstOrDefaultAsync(id => id.UserId == userId);
         }
 
-        public Task<UserDetails> UpdateUser(UserDetails userDetails)
+        public async Task<UserDetails> UpdateUserById(int userId ,UserDetails userDetails)
         {
-            throw new NotImplementedException();
+            var result = await _appDbContext.UserDetails.FirstOrDefaultAsync(id => id.UserId == userId);
+            if (result != null)
+            {
+                result.Email = userDetails.Email;
+                result.UserName = userDetails.UserName;
+                result.Password = userDetails.Password;
+                await _appDbContext.SaveChangesAsync();
+                return result;
+
+            }
+            return null;
+
         }
     }
 }
+
