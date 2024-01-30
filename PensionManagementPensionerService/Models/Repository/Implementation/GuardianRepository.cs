@@ -13,26 +13,40 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
             _appDbContext = appDbContext;
         }
         public async Task<GuardianDetails> AddGuardian(GuardianDetails guardianDetails)
-        {   
-            var result = await _appDbContext.GuardianDetails.AddAsync(guardianDetails);
+        {
+            
+            GuardianDetails addGuardian = new GuardianDetails
+            {
+                GuardianId = Guid.NewGuid(),
+                GuardianName = guardianDetails.GuardianName,
+                DateOfBirth = guardianDetails.DateOfBirth,
+                Relation = guardianDetails.Relation,
+                Age = guardianDetails.Age,
+                Gender = guardianDetails.Gender,
+                PhoneNumber = guardianDetails.PhoneNumber,
+                PensionerId = guardianDetails.PensionerId,
+
+            };
+            var result = await _appDbContext.GuardianDetails.AddAsync(addGuardian);
             await _appDbContext.SaveChangesAsync();
             return result.Entity;
         }
 
-        public async void DeleteGuardianById(Guid guardianId)
+        public void DeleteGuardianById(Guid guardianId)
         {
-            var result = await _appDbContext.GuardianDetails.FirstOrDefaultAsync(id => id.GuardianId == guardianId);
-            _appDbContext.GuardianDetails.Remove(result);         
+            var result = _appDbContext.GuardianDetails.FirstOrDefault(id => id.GuardianId == guardianId);
+            _appDbContext.GuardianDetails.Remove(result);
+            _appDbContext.SaveChanges();
         }
 
         public async Task<IEnumerable<GuardianDetails>> GetAllGuardianDetails()
         {
-            return await _appDbContext.GuardianDetails.ToListAsync();
+            return await _appDbContext.GuardianDetails.Include(o => o.PensionerDetails).ThenInclude(o => o.UserDetails).Include(o => o.PensionerDetails.PensionPlanDetails).ToListAsync();
         }
 
         public async Task<GuardianDetails> GetGuardianById(Guid guardianId)
         {
-            return await _appDbContext.GuardianDetails.FirstOrDefaultAsync(id => id.GuardianId == guardianId);
+            return await _appDbContext.GuardianDetails.Include(o => o.PensionerDetails).ThenInclude(o => o.UserDetails).Include(o => o.PensionerDetails.PensionPlanDetails).FirstOrDefaultAsync(id => id.GuardianId == guardianId);
         }
 
         public async Task<GuardianDetails> UpdateGuardianById(Guid guardianId, GuardianDetails guardianDetails)
