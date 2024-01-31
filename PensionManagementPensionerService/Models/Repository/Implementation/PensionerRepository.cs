@@ -53,7 +53,7 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
 
         public async Task<PensionerDetails> UpdatePensionerDetailsById(Guid pensionerId, PensionerDetails pensionerDetails)
         {
-            var result = await _appDbContext.PensionerDetails.FirstOrDefaultAsync(id => id.PensionerId == pensionerId);
+            var result = await _appDbContext.PensionerDetails.Include(o => o.PensionPlanDetails).Include(o => o.UserDetails).FirstOrDefaultAsync(id => id.PensionerId == pensionerId);
             if (result != null)
               {
                 result.FullName = pensionerDetails.FullName;

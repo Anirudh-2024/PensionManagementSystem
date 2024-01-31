@@ -51,7 +51,7 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
 
         public async Task<GuardianDetails> UpdateGuardianById(Guid guardianId, GuardianDetails guardianDetails)
         {
-            var result = await _appDbContext.GuardianDetails.FirstOrDefaultAsync(id => id.GuardianId == guardianId);
+            var result = await _appDbContext.GuardianDetails.Include(o => o.PensionerDetails).ThenInclude(o => o.UserDetails).Include(o => o.PensionerDetails.PensionPlanDetails).FirstOrDefaultAsync(id => id.GuardianId == guardianId);
             if (result != null)
             {
                result.GuardianName= guardianDetails.GuardianName;

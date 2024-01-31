@@ -49,9 +49,8 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
-                await _guardianRepository.AddGuardian(guardianDetails);
-                return Ok(guardianDetails);
-
+                var result = await _guardianRepository.AddGuardian(guardianDetails);
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -65,8 +64,8 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
-                await _guardianRepository.UpdateGuardianById(guardianId, guardianDetails);
-                return Ok(guardianDetails);
+                var result = await _guardianRepository.UpdateGuardianById(guardianId, guardianDetails);
+                return Ok(result);
             }
             catch (Exception ex)
             {

@@ -49,8 +49,8 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
-                await _pensionerRepository.AddPensionerDetails(pensionerDetails);
-                return Ok(pensionerDetails);
+                var result = await _pensionerRepository.AddPensionerDetails(pensionerDetails);
+                return Ok(result);
 
             }
             catch (Exception ex)
@@ -65,8 +65,8 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
-                await _pensionerRepository.UpdatePensionerDetailsById(pensionerId, pensionerDetails);
-                return Ok(pensionerDetails);
+                var result = await _pensionerRepository.UpdatePensionerDetailsById(pensionerId, pensionerDetails);
+                return Ok(result);
             }
             catch (Exception ex)
             {
