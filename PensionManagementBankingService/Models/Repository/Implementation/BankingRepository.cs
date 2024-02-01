@@ -16,8 +16,18 @@ namespace PensionManagementBankingService.Models.Repository.Implementation
 
         public async Task<BankingDetails> AddBankingDetails(BankingDetails bankingDetails)
         {
+            BankingDetails addbanking = new BankingDetails
+            {
+                BankId = Guid.NewGuid(),
+                BankName = bankingDetails.BankName,
+                AccountNumber = bankingDetails.AccountNumber,
+                IfscCode = bankingDetails.IfscCode,
+                BranchName = bankingDetails.BranchName,
+                PanNumber = bankingDetails.PanNumber,
+                PensionerId = bankingDetails.PensionerId,
+            };
 
-            var result = await _appDbContext.BankingDetails.AddAsync(bankingDetails);
+            var result = await _appDbContext.BankingDetails.AddAsync(addbanking);
             await _appDbContext.SaveChangesAsync();
             return bankingDetails;
         }
