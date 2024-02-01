@@ -14,15 +14,27 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
         }
         public async Task<PensionPlanDetails> AddPensionPlan(PensionPlanDetails pensionPlanDetails)
         {
-            var result = await _appDbContext.PensionPlanDetails.AddAsync(pensionPlanDetails);
+            PensionPlanDetails addPensionPlan = new PensionPlanDetails
+            { 
+                PensionPlanId = Guid.NewGuid(),
+                PensionPlanName = pensionPlanDetails.PensionPlanName,
+                Amount = pensionPlanDetails.Amount,
+                StartDate = pensionPlanDetails.StartDate,
+                EndDate = pensionPlanDetails.EndDate,
+                PensionDetails = pensionPlanDetails.PensionDetails
+
+            };
+            var result = await _appDbContext.PensionPlanDetails.AddAsync(addPensionPlan);
             await _appDbContext.SaveChangesAsync();
             return result.Entity;
         }
 
-        public async void DeletePensionPlanById(Guid pensionPlanId)
+        public void DeletePensionPlanById(Guid pensionPlanId)
         {
-            var result = await _appDbContext.PensionPlanDetails.FirstOrDefaultAsync(id => id.PensionPlanId == pensionPlanId);
-            _appDbContext.PensionPlanDetails.Remove(result); 
+            var result =  _appDbContext.PensionPlanDetails.FirstOrDefault(id => id.PensionPlanId == pensionPlanId);
+             _appDbContext.PensionPlanDetails.Remove(result); 
+             _appDbContext.SaveChanges();
+
         }
 
         public async Task<IEnumerable<PensionPlanDetails>> GetAllPensionPlans()
