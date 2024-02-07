@@ -24,7 +24,7 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
                 Gender = pensionerDetails.Gender,
                 Address = pensionerDetails.Address,
                 PensionPlanId = pensionerDetails.PensionPlanId,
-                UserId = pensionerDetails.UserId,
+                Id = pensionerDetails.Id,
                 AadharNumber = pensionerDetails.AadharNumber,
                 PhoneNumber = pensionerDetails.PhoneNumber,
 
@@ -43,17 +43,17 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
 
         public async Task<IEnumerable<PensionerDetails>> GetAllPensionerDetails()
         { 
-            return await _appDbContext.PensionerDetails.Include(o => o.PensionPlanDetails).Include(o => o.UserDetails).ToListAsync();
+            return await _appDbContext.PensionerDetails.Include(o => o.PensionPlanDetails).ToListAsync();
         }
 
         public async Task<PensionerDetails> GetPensionerDetailsById(Guid pensionerId)
         {
-            return await _appDbContext.PensionerDetails.Include(o => o.PensionPlanDetails).Include(o => o.UserDetails).FirstOrDefaultAsync(id => id.PensionerId == pensionerId);
+            return await _appDbContext.PensionerDetails.Include(o => o.PensionPlanDetails).FirstOrDefaultAsync(id => id.PensionerId == pensionerId);
         }
 
         public async Task<PensionerDetails> UpdatePensionerDetailsById(Guid pensionerId, PensionerDetails pensionerDetails)
         {
-            var result = await _appDbContext.PensionerDetails.Include(o => o.PensionPlanDetails).Include(o => o.UserDetails).FirstOrDefaultAsync(id => id.PensionerId == pensionerId);
+            var result = await _appDbContext.PensionerDetails.Include(o => o.PensionPlanDetails).FirstOrDefaultAsync(id => id.PensionerId == pensionerId);
             if (result != null)
               {
                 result.FullName = pensionerDetails.FullName;
