@@ -12,24 +12,26 @@ namespace PensionManagementUserLoginService.Models.Context
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            string readerRole = "Reader";
+            string writingRole = "Writer";
             base.OnModelCreating(builder);
-            var readerRoleId = "92327fd8-20fc-42d8-9bd8-536a746bc3ec";
-            var writerRoleId = "ab185359-929b-48ef-85b3-6acb0637dcfd";
+            var readerRoleId = Guid.NewGuid().ToString(); ;
+            var writerRoleId = Guid.NewGuid().ToString(); ;
 
             var roles = new List<IdentityRole>
             {
                 new IdentityRole()
                 {
                     Id= readerRoleId,
-                    Name="Reader",
-                    NormalizedName="Reader".ToUpper(),
+                    Name=readerRole,
+                    NormalizedName=readerRole.ToUpper(),
                     ConcurrencyStamp = readerRoleId
                 },
                 new IdentityRole()
                 {
                     Id= writerRoleId,
-                    Name="Writer",
-                    NormalizedName="Writer".ToUpper(),
+                    Name=writingRole,
+                    NormalizedName=writingRole.ToUpper(),
                     ConcurrencyStamp=writerRoleId
                 },
             };
@@ -37,7 +39,7 @@ namespace PensionManagementUserLoginService.Models.Context
             builder.Entity<IdentityRole>().HasData(roles);
 
 
-            var adminUserId = "7ace62fb-9191-4678-946c-3de3f42347da";
+            var adminUserId = Guid.NewGuid().ToString();
             var admin = new IdentityUser()
             {
                 Id = adminUserId,

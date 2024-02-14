@@ -22,7 +22,7 @@ namespace PensionManagementUserLoginService
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            
             builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 
             builder.Services.AddIdentityCore<IdentityUser>()
@@ -61,10 +61,7 @@ namespace PensionManagementUserLoginService
 
 
 
-            builder.Services.AddDbContext<AppDBContext>(options =>
-            {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("PMSConnectionString"));
-            });
+            
             builder.Services.AddDbContext<AuthDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("PMSConnectionString"));
