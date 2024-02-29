@@ -24,6 +24,10 @@ namespace PensionManagementBankingService
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("PMSConnectionString"));
             });
+            builder.Services.AddCors(x => x.AddPolicy("corspolicy", build =>
+            {
+                build.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+            }));
 
             var app = builder.Build();
 
@@ -37,7 +41,12 @@ namespace PensionManagementBankingService
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
+            app.UseCors(options =>
+            {
+                options.AllowAnyHeader();
+                options.AllowAnyMethod();
+                options.AllowAnyOrigin();
+            });
 
             app.MapControllers();
 
