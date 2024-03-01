@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PensionManagementPensionerService.Models.Repository.Interfaces;
 using PensionManagementPensionerService.Models;
+using PensionManagementPensionerService.DTO;
 
 namespace PensionManagementPensionerService.Controllers
 {
@@ -43,13 +44,40 @@ namespace PensionManagementPensionerService.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
-        [HttpPost("AddPensionerDetails")]
-        public async Task<ActionResult<PensionerDetails>> AddPensionerDetails([FromBody] PensionerDetails pensionerDetails)
+        [HttpGet("GetPensionerIdById")]
+        public async Task<ActionResult> GetPensionerIdById(string userId)
         {
             try
             {
-                var result = await _pensionerRepository.AddPensionerDetails(pensionerDetails);
+                var result = await _pensionerRepository.GetPensionerIdById(userId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("AddPensionerDetails")]
+        public async Task<ActionResult<PensionerDetails>> AddPensionerDetails([FromBody] PensionerRequestDTO pensionerDetails)
+        {
+            try
+            {
+                var request = new PensionerDetails
+                {
+                    FullName = pensionerDetails.FullName,
+                    DateOfBirth = pensionerDetails.DateOfBirth,
+                    Gender = pensionerDetails.Gender,
+                    AadharNumber=pensionerDetails.AadharNumber,
+                    PhoneNumber = pensionerDetails.PhoneNumber,
+                    Address = pensionerDetails.Address, 
+                    Age = pensionerDetails.Age,
+                    Id = pensionerDetails.Id,
+                    PensionPlanId = pensionerDetails.PensionPlanId
+
+                };
+
+                var result = await _pensionerRepository.AddPensionerDetails(request);
                 return Ok(result);
 
             }

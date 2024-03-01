@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PensionManagementPensionerService.Models.Repository.Interfaces;
 using PensionManagementPensionerService.Models;
+using PensionManagementPensionerService.DTO;
 
 namespace PensionManagementPensionerService.Controllers
 {
@@ -45,11 +46,22 @@ namespace PensionManagementPensionerService.Controllers
         }
 
         [HttpPost("AddGuardianDetails")]
-        public async Task<ActionResult<GuardianDetails>> AddGuardian([FromBody] GuardianDetails guardianDetails)
+        public async Task<ActionResult<GuardianDetails>> AddGuardian([FromBody] GuardianRequestDTO guardianDetails)
         {
             try
             {
-                var result = await _guardianRepository.AddGuardian(guardianDetails);
+                var request = new GuardianDetails
+                {
+                    GuardianName = guardianDetails.GuardianName,
+                    DateOfBirth = guardianDetails.DateOfBirth,
+                    Relation = guardianDetails.Relation,
+                    Age = guardianDetails.Age,
+                    Gender = guardianDetails.Gender,
+                    PhoneNumber = guardianDetails.PhoneNumber,
+                    PensionerId = guardianDetails.PensionerId,
+                };
+
+                var result = await _guardianRepository.AddGuardian(request);
                 return Ok(result);
             }
             catch (Exception ex)
