@@ -10,6 +10,8 @@
         Task<PensionerDetails> AddPensionerDetails(PensionerDetails pensionerDetails);  
 
         void DeletePensionerDetailsById(Guid pensionerId);
+
+        Task<Guid?> GetPensionerIdById(string userId);
             
     }
 }

@@ -69,5 +69,23 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
            }
            return null;
         }
+        public async Task<Guid?> GetPensionerIdById(string userId)
+        {
+            try
+            {
+                var pensioner = await _appDbContext.PensionerDetails
+                                      .FirstOrDefaultAsync(p => p.Id == userId);
+                if (pensioner != null)
+                {
+                    return pensioner.PensionerId;
+                }
+
+                return null;
+            }
+            catch (Exception ex) {
+
+                throw new Exception("Error");
+            }
+        }
     }
 }
