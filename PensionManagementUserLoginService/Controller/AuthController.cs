@@ -23,6 +23,7 @@ namespace PensionManagementUserLoginService.Controller
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO request)
         {
             var identityUser = await _userManager.FindByEmailAsync(request.Email);
+           
             if (identityUser is not null)
             {
                var checkPassportResult = await _userManager.CheckPasswordAsync(identityUser, request.Password);
@@ -34,9 +35,11 @@ namespace PensionManagementUserLoginService.Controller
                     var jwtToken=_tokenRepository.CreateJwtToken(identityUser,roles.ToList());
                     var response = new LoginRespondDTO()
                     {
+                        
                         Email = request.Email,
                         Roles = roles.ToList(),
-                        Token = jwtToken
+                        Token = jwtToken,
+                        Id = identityUser.Id
                     };
                     return Ok(response);
                 }

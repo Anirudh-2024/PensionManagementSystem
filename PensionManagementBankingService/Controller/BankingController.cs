@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PensionManagementBankingService.DTO;
 using PensionManagementBankingService.Models;
 using PensionManagementBankingService.Models.Repository.Implementation;
 using PensionManagementBankingService.Models.Repository.Interfaces;
@@ -17,7 +18,7 @@ namespace PensionManagementBankingService.Controller
             _bankingRepository = bankingRepository;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BankingDetails>>> GetAllBankingDetails()
+        public async Task<ActionResult<IEnumerable<BankResponse>>> GetAllBankingDetails()
         {
             try
             {
@@ -30,7 +31,7 @@ namespace PensionManagementBankingService.Controller
             }
         }
         [HttpGet("{bankId}")]
-        public async Task<ActionResult<BankingDetails>> GetBankingDetailsById(Guid bankId)
+        public async Task<ActionResult<BankResponse>> GetBankingDetailsById(Guid bankId)
         {
             try
             {
@@ -47,11 +48,21 @@ namespace PensionManagementBankingService.Controller
             }
         }
         [HttpPost]
-        public async Task<ActionResult<BankingDetails>> AddBankingDetails([FromBody]BankingDetails bankingDetails)
+        public async Task<ActionResult<BankRequest>> AddBankingDetails([FromBody]BankRequest bankingDetails)
         {
             try
             {
-                var addedBankingDetails = await _bankingRepository.AddBankingDetails(bankingDetails);
+                BankingDetails bankDTO = new BankingDetails
+                {
+                    BankName = bankingDetails.BankName,
+                    BranchName = bankingDetails.BranchName,
+                    AccountNumber = bankingDetails.AccountNumber,
+                    IfscCode = bankingDetails.IfscCode,
+                    PanNumber = bankingDetails.PanNumber,
+                    PensionerId = bankingDetails.PensionerId,
+
+                };
+                var addedBankingDetails = await _bankingRepository.AddBankingDetails(bankDTO);
                 return CreatedAtAction(nameof(GetBankingDetailsById), new { bankId = addedBankingDetails.BankId }, addedBankingDetails);
             }
             catch(Exception ex)
@@ -60,11 +71,21 @@ namespace PensionManagementBankingService.Controller
             }
         }
         [HttpPut("{bankId}")]
-        public async Task<ActionResult<BankingDetails>> UpdateBankingDetailsById(Guid bankId, [FromBody] BankingDetails bankingDetails)
+        public async Task<ActionResult<BankRequest>> UpdateBankingDetailsById(Guid bankId, [FromBody] BankRequest bankingDetails)
         {
             try
             {
-                var updatedBankingDetails = await _bankingRepository.UpdateBankingDetailsById(bankId, bankingDetails);
+                BankingDetails bankDTO = new BankingDetails
+                {
+                    BankName = bankingDetails.BankName,
+                    BranchName = bankingDetails.BranchName,
+                    AccountNumber = bankingDetails.AccountNumber,
+                    IfscCode = bankingDetails.IfscCode,
+                    PanNumber = bankingDetails.PanNumber,
+                    PensionerId = bankingDetails.PensionerId,
+
+                };
+                var updatedBankingDetails = await _bankingRepository.UpdateBankingDetailsById(bankId, bankDTO);
                 if(updatedBankingDetails == null)
                 {
                     return NotFound();
