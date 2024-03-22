@@ -94,5 +94,20 @@ namespace PensionManagementUserLoginService.Controller
             }
             return ValidationProblem(ModelState);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword( [FromBody] LoginRequestDTO loginRequest)
+        {
+            var result = await _userManager.FindByEmailAsync(loginRequest.Email);
+            var tokenResult = await _userManager.GeneratePasswordResetTokenAsync(result);
+            if(result != null)
+            {
+                var res = await _userManager.ResetPasswordAsync(result, tokenResult, loginRequest.Password);
+                return Ok(res);
+            }
+            ModelState.AddModelError("", "Incorrect Email");
+            return ValidationProblem(ModelState);
+        }
+     
     }
 }

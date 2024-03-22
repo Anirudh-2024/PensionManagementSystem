@@ -11,5 +11,7 @@
         Task<GuardianDetails> UpdateGuardianById(Guid guardianId, GuardianDetails guardianDetails);
 
         void DeleteGuardianById(Guid guardianId);
+
+        Task<Guid?> GetGuadianIdByPensionerId(Guid pensionerId);
     }
 }
