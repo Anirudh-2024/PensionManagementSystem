@@ -18,6 +18,5 @@ namespace PensionManagementPensionerService.DTO
         public Guid PensionPlanId { get; set; }
         [ForeignKey("PensionPlanId")]
         public virtual PensionPlanDetails PensionPlanDetails { get; set; }
-
     }
 }

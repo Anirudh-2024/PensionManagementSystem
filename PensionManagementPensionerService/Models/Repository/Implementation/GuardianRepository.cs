@@ -14,7 +14,7 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
         }
         public async Task<GuardianDetails> AddGuardian(GuardianDetails guardianDetails)
         {
-            
+
             GuardianDetails addGuardian = new GuardianDetails
             {
                 GuardianId = Guid.NewGuid(),
@@ -51,19 +51,40 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
 
         public async Task<GuardianDetails> UpdateGuardianById(Guid guardianId, GuardianDetails guardianDetails)
         {
-            var result = await _appDbContext.GuardianDetails.Include(o => o.PensionerDetails).Include(o => o.PensionerDetails.PensionPlanDetails).FirstOrDefaultAsync(id => id.GuardianId == guardianId);
+            var result = await _appDbContext.GuardianDetails.FirstOrDefaultAsync(id => id.GuardianId == guardianId);
             if (result != null)
             {
-               result.GuardianName= guardianDetails.GuardianName;
-               result.Relation = guardianDetails.Relation;
-               result.PhoneNumber = guardianDetails.PhoneNumber;
-               result.Age = guardianDetails.Age;
-               result.Gender = guardianDetails.Gender;
-               result.DateOfBirth = guardianDetails.DateOfBirth;
-               await _appDbContext.SaveChangesAsync();
-               return result;
-           }
+                result.GuardianName = guardianDetails.GuardianName;
+                result.Relation = guardianDetails.Relation;
+                result.PhoneNumber = guardianDetails.PhoneNumber;
+                result.Age = guardianDetails.Age;
+                result.Gender = guardianDetails.Gender;
+                result.DateOfBirth = guardianDetails.DateOfBirth;
+                await _appDbContext.SaveChangesAsync();
+                return result;
+            }
             return null;
+        }
+
+        public async Task<Guid?> GetGuadianIdByPensionerId(Guid pensionerId)
+        {
+            try
+            {
+                var result = await _appDbContext.GuardianDetails.FirstOrDefaultAsync(g => g.PensionerId == pensionerId);
+                if (result != null)
+                {
+                    return result.GuardianId;
+                }
+                return null;
+            }
+
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error");
+            }
         }
     }
 }
+
+

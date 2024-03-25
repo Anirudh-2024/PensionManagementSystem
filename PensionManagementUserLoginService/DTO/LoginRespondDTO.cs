@@ -2,6 +2,7 @@
 {
     public class LoginRespondDTO
     {
+        public string Id { get; set; }
         public String Email { get; set; }
 
         public string Token { get; set; }

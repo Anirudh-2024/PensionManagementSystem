@@ -29,7 +29,7 @@ namespace PensionManagementBankingService.Models.Repository.Implementation
 
             var result = await _appDbContext.BankingDetails.AddAsync(addbanking);
             await _appDbContext.SaveChangesAsync();
-            return bankingDetails;
+            return result.Entity;
         }
 
 
@@ -68,6 +68,26 @@ namespace PensionManagementBankingService.Models.Repository.Implementation
 
             }
             return null;
+        }
+
+        public async Task<Guid?> GetBankDetailsByPensionerId(Guid pensionerId)
+        {
+            try
+            {
+                var bankDetails = await _appDbContext.BankingDetails
+                                      .FirstOrDefaultAsync(b => b.PensionerId== pensionerId);
+                if (bankDetails != null)
+                {
+                    return bankDetails.BankId;
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error");
+            }
         }
     }
 }

@@ -23,6 +23,7 @@ namespace PensionManagementUserLoginService.Controller
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO request)
         {
             var identityUser = await _userManager.FindByEmailAsync(request.Email);
+           
             if (identityUser is not null)
             {
                var checkPassportResult = await _userManager.CheckPasswordAsync(identityUser, request.Password);
@@ -34,9 +35,11 @@ namespace PensionManagementUserLoginService.Controller
                     var jwtToken=_tokenRepository.CreateJwtToken(identityUser,roles.ToList());
                     var response = new LoginRespondDTO()
                     {
+                        
                         Email = request.Email,
                         Roles = roles.ToList(),
-                        Token = jwtToken
+                        Token = jwtToken,
+                        Id = identityUser.Id
                     };
                     return Ok(response);
                 }
@@ -91,5 +94,20 @@ namespace PensionManagementUserLoginService.Controller
             }
             return ValidationProblem(ModelState);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword( [FromBody] LoginRequestDTO loginRequest)
+        {
+            var result = await _userManager.FindByEmailAsync(loginRequest.Email);
+            var tokenResult = await _userManager.GeneratePasswordResetTokenAsync(result);
+            if(result != null)
+            {
+                var res = await _userManager.ResetPasswordAsync(result, tokenResult, loginRequest.Password);
+                return Ok(res);
+            }
+            ModelState.AddModelError("", "Incorrect Email");
+            return ValidationProblem(ModelState);
+        }
+     
     }
 }

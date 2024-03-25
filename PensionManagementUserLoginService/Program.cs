@@ -66,7 +66,10 @@ namespace PensionManagementUserLoginService
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("PMSConnectionString"));
             });
-
+            builder.Services.AddCors(x => x.AddPolicy("corspolicy", build =>
+            {
+                build.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+            }));
 
             var app = builder.Build();
 
@@ -79,6 +82,12 @@ namespace PensionManagementUserLoginService
 
             app.UseHttpsRedirection();
             app.UseAuthentication();
+            app.UseCors(options =>
+            {
+                options.AllowAnyHeader();
+                options.AllowAnyMethod();
+                options.AllowAnyOrigin();
+            });
             app.UseAuthorization();
 
 
