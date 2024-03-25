@@ -37,6 +37,20 @@ namespace PensionManagementPensionerService.Controllers
             try
             {
                 var result = await _pensionerRepository.GetPensionerDetailsById(pensionerId);
+                var request = new PensionerDetails
+                {
+                    PensionerId = result.PensionerId,
+                    FullName = result.FullName,
+                    DateOfBirth = result.DateOfBirth,
+                    Gender = result.Gender,
+                    AadharNumber = result.AadharNumber,
+                    PhoneNumber = result.PhoneNumber,
+                    Address = result.Address,
+                    Age = result.Age,
+                    Id = result.Id,
+                    PensionPlanId = result.PensionPlanId
+
+                };
                 return Ok(result);
             }
             catch (Exception ex)
@@ -89,12 +103,40 @@ namespace PensionManagementPensionerService.Controllers
         }
 
         [HttpPut("UpdatePensionerDetailsById")]
-        public async Task<IActionResult> UpdatePensionerDetailsById(Guid pensionerId, [FromBody] PensionerDetails pensionerDetails)
+        public async Task<IActionResult> UpdatePensionerDetailsById(Guid pensionerId, [FromBody] PensionerRequestDTO pensionerDetails)
         {
             try
             {
-                var result = await _pensionerRepository.UpdatePensionerDetailsById(pensionerId, pensionerDetails);
-                return Ok(result);
+                var request = new PensionerDetails
+                {
+                    FullName = pensionerDetails.FullName,
+                    DateOfBirth = pensionerDetails.DateOfBirth,
+                    Gender = pensionerDetails.Gender,
+                    AadharNumber = pensionerDetails.AadharNumber,
+                    PhoneNumber = pensionerDetails.PhoneNumber,
+                    Address = pensionerDetails.Address,
+                    Age = pensionerDetails.Age,
+                    Id = pensionerDetails.Id,
+                    PensionPlanId = pensionerDetails.PensionPlanId
+
+                };
+                var result = await _pensionerRepository.UpdatePensionerDetailsById(pensionerId, request);
+                var response = new PensionResponseDTO
+                {
+                    pensionerId = result.PensionerId,
+                    FullName = result.FullName,
+                    DateOfBirth = result.DateOfBirth,
+                    Gender = result.Gender,
+                    AadharNumber = result.AadharNumber,
+                    PhoneNumber = result.PhoneNumber,
+                    Address = result.Address,
+                    Age = result.Age,
+                    Id = result.Id,
+                    PensionPlanId = result.PensionPlanId
+
+                };
+                return Ok(response);
+                
             }
             catch (Exception ex)
             {

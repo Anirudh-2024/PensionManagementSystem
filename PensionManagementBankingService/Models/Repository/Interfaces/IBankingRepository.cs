@@ -8,6 +8,8 @@
         Task<BankingDetails> AddBankingDetails(BankingDetails bankingDetails);
         void DeleteBankingDetailsById(Guid bankId);
 
+        Task<Guid?> GetBankDetailsByPensionerId(Guid pensionerId);
+
         
     }
 }

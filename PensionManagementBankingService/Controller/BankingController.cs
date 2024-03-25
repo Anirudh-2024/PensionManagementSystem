@@ -63,7 +63,17 @@ namespace PensionManagementBankingService.Controller
 
                 };
                 var addedBankingDetails = await _bankingRepository.AddBankingDetails(bankDTO);
-                return CreatedAtAction(nameof(GetBankingDetailsById), new { bankId = addedBankingDetails.BankId }, addedBankingDetails);
+                BankResponse bank = new BankResponse
+                {
+                    BankId = addedBankingDetails.BankId,
+                    BankName = addedBankingDetails.BankName,
+                    BranchName = addedBankingDetails.BranchName,
+                    AccountNumber = addedBankingDetails.AccountNumber,
+                    IfscCode = addedBankingDetails.IfscCode,
+                    PanNumber = addedBankingDetails.PanNumber,
+                    PensionerId = addedBankingDetails.PensionerId,
+                };
+                return Ok(bank);
             }
             catch(Exception ex)
             {
@@ -111,6 +121,18 @@ namespace PensionManagementBankingService.Controller
                 return BadRequest(ex.Message);
             }
         }
-
+        [HttpGet("GetBankIdByPensionerId")]
+        public async Task<ActionResult> GetPensionerIdById(Guid pensionerId)
+        {
+            try
+            {
+                var result = await _bankingRepository.GetBankDetailsByPensionerId(pensionerId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

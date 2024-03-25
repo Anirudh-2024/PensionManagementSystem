@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using PensionManagementPensionerService.Models.Repository.Interfaces;
 using PensionManagementPensionerService.Models;
 using PensionManagementPensionerService.DTO;
+using PensionManagementPensionerService.Models.Context;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace PensionManagementPensionerService.Controllers
 {
@@ -37,7 +39,19 @@ namespace PensionManagementPensionerService.Controllers
             try
             {
                 var result = await _guardianRepository.GetGuardianById(guardianId);
-                return Ok(result);
+                var response = new GuardianResponse
+                {
+                    GuardianId = guardianId,
+                    GuardianName = result.GuardianName,
+                    DateOfBirth = result.DateOfBirth,
+                    Relation = result.Relation,
+                    Age = result.Age,
+                    Gender = result.Gender,
+                    PhoneNumber = result.PhoneNumber,
+                    PensionerId = result.PensionerId,
+
+                };
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -72,12 +86,35 @@ namespace PensionManagementPensionerService.Controllers
         }
 
         [HttpPut("UpdateGuardianById")]
-        public async Task<IActionResult> UpdateGuardianById(Guid guardianId, [FromBody] GuardianDetails guardianDetails)
+        public async Task<IActionResult> UpdateGuardianById(Guid guardianId, [FromBody] GuardianRequestDTO guardianDetails)
         {
             try
             {
-                var result = await _guardianRepository.UpdateGuardianById(guardianId, guardianDetails);
-                return Ok(result);
+                var request = new GuardianDetails
+                {
+                    GuardianName = guardianDetails.GuardianName,
+                    DateOfBirth = guardianDetails.DateOfBirth,
+                    Relation = guardianDetails.Relation,
+                    Age = guardianDetails.Age,
+                    Gender = guardianDetails.Gender,
+                    PhoneNumber = guardianDetails.PhoneNumber,
+                    PensionerId = guardianDetails.PensionerId,
+                };
+                
+                var result = await _guardianRepository.UpdateGuardianById(guardianId, request);
+                var response = new GuardianResponse
+                {
+                    GuardianId = result.GuardianId,
+                    GuardianName = result.GuardianName,
+                    DateOfBirth = result.DateOfBirth,
+                    Relation = result.Relation,
+                    Age = result.Age,
+                    Gender = result.Gender,
+                    PhoneNumber = result.PhoneNumber,
+                    PensionerId = result.PensionerId,
+                };
+                
+                return Ok(response);
             }
             catch (Exception ex)
             {
@@ -99,5 +136,20 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
+        [HttpGet ("GetGuardianIdByPensionerId")]
+        public async Task<ActionResult> GetGuardianIdByPensionerId(Guid pensionerId)
+        {
+            try
+            {
+                var result = await _guardianRepository.GetGuadianIdByPensionerId(pensionerId);
+                return Ok(result);
+            }
+
+            catch (Exception ex)
+            {
+
+                throw new Exception("Error",ex);
+            }
+        }
     }
 }
