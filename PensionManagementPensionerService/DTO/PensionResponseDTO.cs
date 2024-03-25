@@ -1,4 +1,5 @@
 ﻿using PensionManagementPensionerService.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PensionManagementPensionerService.DTO

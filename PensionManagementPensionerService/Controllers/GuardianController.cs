@@ -39,16 +39,16 @@ namespace PensionManagementPensionerService.Controllers
             try
             {
                 var result = await _guardianRepository.GetGuardianById(guardianId);
-                var response = new GuardianResponse
+                var response = new GuardianResponseDTO
                 {
-                    GuardianId = guardianId,
+                    GuardianId = result.GuardianId,
                     GuardianName = result.GuardianName,
-                    DateOfBirth = result.DateOfBirth,
-                    Relation = result.Relation,
-                    Age = result.Age,
-                    Gender = result.Gender,
-                    PhoneNumber = result.PhoneNumber,
-                    PensionerId = result.PensionerId,
+                    DateOfBirth= result.DateOfBirth,
+                    Relation= result.Relation,
+                    Age= result.Age,
+                    Gender= result.Gender,
+                    PhoneNumber= result.PhoneNumber,
+                    PensionerId= result.PensionerId,
 
                 };
                 return Ok(response);
