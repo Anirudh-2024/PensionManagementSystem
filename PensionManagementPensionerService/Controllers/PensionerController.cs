@@ -39,7 +39,7 @@ namespace PensionManagementPensionerService.Controllers
                 var result = await _pensionerRepository.GetPensionerDetailsById(pensionerId);
                 var response = new PensionResponseDTO
                 {
-                    pensionerId = result.PensionerId,
+                    PensionerId = result.PensionerId,
                     FullName = result.FullName,
                     DateOfBirth = result.DateOfBirth,
                     Gender = result.Gender,
@@ -124,7 +124,7 @@ namespace PensionManagementPensionerService.Controllers
                 var result = await _pensionerRepository.UpdatePensionerDetailsById(pensionerId, request);
                 var response = new PensionResponseDTO
                 {
-                    pensionerId=result.PensionerId,
+                    PensionerId=result.PensionerId,
                     FullName = result.FullName,
                     DateOfBirth = result.DateOfBirth,
                     Gender = result.Gender,
