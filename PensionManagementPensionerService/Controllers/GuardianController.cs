@@ -102,7 +102,7 @@ namespace PensionManagementPensionerService.Controllers
                 };
                 
                 var result = await _guardianRepository.UpdateGuardianById(guardianId, request);
-                var response = new GuardianResponse
+                var response = new GuardianResponseDTO
                 {
                     GuardianId = result.GuardianId,
                     GuardianName = result.GuardianName,
