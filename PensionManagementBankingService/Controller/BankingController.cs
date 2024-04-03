@@ -52,6 +52,10 @@ namespace PensionManagementBankingService.Controller
         {
             try
             {
+                if(!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
                 BankingDetails bankDTO = new BankingDetails
                 {
                     BankName = bankingDetails.BankName,
@@ -85,6 +89,10 @@ namespace PensionManagementBankingService.Controller
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
                 BankingDetails bankDTO = new BankingDetails
                 {
                     BankName = bankingDetails.BankName,
