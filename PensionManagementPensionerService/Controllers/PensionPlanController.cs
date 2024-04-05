@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using PensionManagementPensionerService.ExceptionalHandling;
 using PensionManagementPensionerService.Models;
 using PensionManagementPensionerService.Models.Repository.Interfaces;
 
@@ -25,9 +26,13 @@ namespace PensionManagementPensionerService.Controllers
                 var result = await _pensionPlanRepository.GetAllPensionPlans();
                 return Ok(result);
             }
+            catch (EmptyResultException ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
         }
 
@@ -39,9 +44,13 @@ namespace PensionManagementPensionerService.Controllers
                 var result = await _pensionPlanRepository.GetPensionPlanById(pensionPlanId);
                 return Ok(result);
             }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
         }
 
@@ -54,11 +63,15 @@ namespace PensionManagementPensionerService.Controllers
                 return Ok(result);
 
             }
+            catch (DuplicateRecordException ex)
+            {
+                return Conflict(ex.Message);
+            }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
-           
+
         }
 
         [HttpPut("UpdatePensionPlanById")]
@@ -69,9 +82,13 @@ namespace PensionManagementPensionerService.Controllers
                 var result = await _pensionPlanRepository.UpdatePensionPlanById(pensionPlanId,pensionPlanDetails);
                 return Ok(result);
             }
-            catch(Exception ex)
+            catch (NotFoundException ex)
             {
-                return BadRequest(ex.Message);
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
         }
 
@@ -83,9 +100,13 @@ namespace PensionManagementPensionerService.Controllers
                 _pensionPlanRepository.DeletePensionPlanById(pensionPlanId);
                 return NoContent();
              }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
         }
 
