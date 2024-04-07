@@ -5,6 +5,7 @@ using PensionManagementPensionerService.Models;
 using PensionManagementPensionerService.DTO;
 using PensionManagementPensionerService.ExceptionalHandling;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace PensionManagementPensionerService.Controllers
 {
@@ -13,10 +14,12 @@ namespace PensionManagementPensionerService.Controllers
     public class PensionerController : ControllerBase
     {
         private readonly IPensionerRepository _pensionerRepository;
+        private readonly ILogger<PensionerController> _logger;
 
-        public PensionerController(IPensionerRepository pensionerRepository)
+        public PensionerController(IPensionerRepository pensionerRepository, ILogger<PensionerController> logger)
         {
             _pensionerRepository = pensionerRepository;
+            _logger = logger;
         }
 
         [HttpGet("GetAllPensionerDetails")]
@@ -24,15 +27,20 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
+                _logger.LogInformation("Attempting to retrieve all pensioner details.");
                 var result = await _pensionerRepository.GetAllPensionerDetails();
+                _logger.LogInformation("Successfully retrieved all pensioner details: {@result}", result);
                 return Ok(result);
+                
             }
             catch (EmptyResultException ex)
             {
+                _logger.LogInformation("Empty result returned while retrieving pensioner details");
                 return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
+                _logger.LogInformation("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
                 return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
         }
@@ -42,7 +50,9 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
+                _logger.LogInformation("Attempting to retrieve pensioner details by pensioner Id.");
                 var result = await _pensionerRepository.GetPensionerDetailsById(pensionerId);
+                _logger.LogInformation("Successfully retrieved pensioner details by Pensioner Id: {@result}", result);
                 var response = new PensionResponseDTO
                 {
                     pensionerId = result.PensionerId,
@@ -62,10 +72,12 @@ namespace PensionManagementPensionerService.Controllers
             }
             catch (NotFoundException ex)
             {
+                _logger.LogInformation("No pensioner details found.");
                 return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
+                _logger.LogInformation("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
                 return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
         }
@@ -74,15 +86,19 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
+                _logger.LogInformation("Attempting to retrieve pensioner Id by userId.");
                 var result = await _pensionerRepository.GetPensionerIdById(userId);
+                _logger.LogInformation("Successfully retrieved pensioner Id by userId : {@result}", result);
                 return Ok(result);
             }
             catch (NotFoundException ex)
             {
+                _logger.LogInformation("No pensioner details found.");
                 return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
+                _logger.LogInformation("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
                 return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
         }
@@ -92,6 +108,7 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
+                _logger.LogInformation("Attempting to add pensioner details.");
                 var request = new PensionerDetails
                 {
                     FullName = pensionerDetails.FullName,
@@ -107,15 +124,18 @@ namespace PensionManagementPensionerService.Controllers
                 };
 
                 var result = await _pensionerRepository.AddPensionerDetails(request);
+                _logger.LogInformation("Successfully added pensioner details. {@result}", result);
                 return Ok(result);
 
             }
             catch(DuplicateRecordException ex)
             {
+                _logger.LogInformation("Attempted to add a duplicate record");
                 return Conflict(ex.Message);
             }
             catch (Exception ex)
             {
+                _logger.LogInformation("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
                 return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
 
@@ -126,6 +146,7 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
+                _logger.LogInformation("Attempting to update pensioner details by pensioner Id.");
                 var request = new PensionerDetails
                 {
                     FullName = pensionerDetails.FullName,
@@ -140,6 +161,7 @@ namespace PensionManagementPensionerService.Controllers
 
                 };
                 var result = await _pensionerRepository.UpdatePensionerDetailsById(pensionerId, request);
+                _logger.LogInformation("Successfully updated pensioner details by Pensioner Id {@result}", result);
                 var response = new PensionResponseDTO
                 {
                     pensionerId=result.PensionerId,
@@ -158,10 +180,12 @@ namespace PensionManagementPensionerService.Controllers
             }
             catch (NotFoundException ex)
             {
+                _logger.LogInformation("No pensioner details found.");
                 return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
+                _logger.LogInformation("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
                 return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
         }
@@ -171,15 +195,19 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
+                _logger.LogInformation("Attempting to delete pensioner details by pensioner Id.");
                 _pensionerRepository.DeletePensionerDetailsById(pensionerId);
+                _logger.LogInformation("Successfully deleted pensioner details by Pensioner Id.");
                 return NoContent();
             }
             catch(NotFoundException ex)
             {
+                _logger.LogInformation("No pensioner details found.");
                 return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
+                _logger.LogInformation("An unexpected error occurred while processing the request: {ErrorMessage}", ex.Message);
                 return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
         }

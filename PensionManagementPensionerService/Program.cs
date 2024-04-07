@@ -2,10 +2,19 @@ using Microsoft.EntityFrameworkCore;
 using PensionManagementPensionerService.Models.Context;
 using PensionManagementPensionerService.Models.Repository.Implementation;
 using PensionManagementPensionerService.Models.Repository.Interfaces;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/Pensioner_Log1.txt", rollingInterval:RollingInterval.Hour)
+    .MinimumLevel.Information()    
+    .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
