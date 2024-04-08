@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PensionManagementBankingService.ExceptionHandling;
 using PensionManagementBankingService.Models.Context;
 using PensionManagementBankingService.Models.Repository.Interfaces;
 
@@ -16,48 +17,105 @@ namespace PensionManagementBankingService.Models.Repository.Implementation
 
         public async Task<BankingDetails> AddBankingDetails(BankingDetails bankingDetails)
         {
-            BankingDetails addbanking = new BankingDetails
+           
+            try
             {
-                BankId = Guid.NewGuid(),
-                BankName = bankingDetails.BankName,
-                AccountNumber = bankingDetails.AccountNumber,
-                IfscCode = bankingDetails.IfscCode,
-                BranchName = bankingDetails.BranchName,
-                PanNumber = bankingDetails.PanNumber,
-                PensionerId = bankingDetails.PensionerId,
-            };
+                var existingRecord = await _appDbContext.BankingDetails.FirstOrDefaultAsync(u => u.PensionerId == bankingDetails.PensionerId);
+                if (existingRecord != null)
+                {
+                    throw new DuplicateRecordException("An Duplicate record already exist with same pensioner id");
+                }
+                BankingDetails addbanking = new BankingDetails
+                {
+                    BankId = Guid.NewGuid(),
+                    BankName = bankingDetails.BankName,
+                    AccountNumber = bankingDetails.AccountNumber,
+                    IfscCode = bankingDetails.IfscCode,
+                    BranchName = bankingDetails.BranchName,
+                    PanNumber = bankingDetails.PanNumber,
+                    PensionerId = bankingDetails.PensionerId,
+                };
 
-            var result = await _appDbContext.BankingDetails.AddAsync(addbanking);
-            await _appDbContext.SaveChangesAsync();
-            return result.Entity;
+                var result = await _appDbContext.BankingDetails.AddAsync(addbanking);
+                await _appDbContext.SaveChangesAsync();
+                return result.Entity;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
 
         public void  DeleteBankingDetailsById(Guid bankId)
         {
-            var result =_appDbContext.BankingDetails.FirstOrDefault(id => id.BankId == bankId);
-          
+            
+            try
+            {
+                var result = _appDbContext.BankingDetails.FirstOrDefault(id => id.BankId == bankId);
+                if(result == null)
+                {
+                    throw new NotFoundException("Banking Details not found for given Bank Id.");
+                }
                 _appDbContext.BankingDetails.Remove(result);
                 _appDbContext.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
                 
             
         }
 
         public async Task<IEnumerable<BankingDetails>> GetAllBankingDetails()
         {
-            return await _appDbContext.BankingDetails.ToListAsync();
+            
+            try
+            {
+                var result= await _appDbContext.BankingDetails.ToListAsync();
+                if(result.Count == 0)
+                {
+                    throw new EmptyResultException("There are no guardian details available in databae.");
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task<BankingDetails> GetBankingDetailsById(Guid bankId)
         {
-            return await _appDbContext.BankingDetails.FirstOrDefaultAsync(id => id.BankId == bankId);
+            
+            try
+            {
+                var result= await _appDbContext.BankingDetails.FirstOrDefaultAsync(id => id.BankId == bankId);
+                if(result == null)
+                {
+                    throw new NotFoundException("Banking Details not Found for given Id.");
+                }
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task<BankingDetails> UpdateBankingDetailsById(Guid bankId ,BankingDetails bankingDetails)
         {
-            var result = await _appDbContext.BankingDetails.FirstOrDefaultAsync(id => id.BankId == bankId);
-            if (result != null)
+            
+            try
             {
+                var result = await _appDbContext.BankingDetails.FirstOrDefaultAsync(id => id.BankId == bankId);
+                if(result == null)
+                {
+                    throw new NotFoundException("Guardian details not found for given Banking Id.");
+                }
                 result.PanNumber = bankingDetails.PanNumber;
                 result.AccountNumber = bankingDetails.AccountNumber;
                 result.BranchName = bankingDetails.BranchName;
@@ -67,7 +125,10 @@ namespace PensionManagementBankingService.Models.Repository.Implementation
                 return result;
 
             }
-            return null;
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task<Guid?> GetBankDetailsByPensionerId(Guid pensionerId)
@@ -76,17 +137,18 @@ namespace PensionManagementBankingService.Models.Repository.Implementation
             {
                 var bankDetails = await _appDbContext.BankingDetails
                                       .FirstOrDefaultAsync(b => b.PensionerId== pensionerId);
-                if (bankDetails != null)
+                if(bankDetails == null)
                 {
-                    return bankDetails.BankId;
+                    throw new NotFoundException("BankDetails Not Found for given Pensioner Id.");
                 }
+                return bankDetails.BankId;
 
-                return null;
+                
             }
             catch (Exception ex)
             {
 
-                throw new Exception("Error");
+                throw ex;
             }
         }
     }

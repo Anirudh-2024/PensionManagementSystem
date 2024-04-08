@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PensionManagementBankingService.DTO;
+using PensionManagementBankingService.ExceptionHandling;
 using PensionManagementBankingService.Models;
 using PensionManagementBankingService.Models.Repository.Implementation;
 using PensionManagementBankingService.Models.Repository.Interfaces;
@@ -25,9 +26,14 @@ namespace PensionManagementBankingService.Controller
                 var bankingDetails = await _bankingRepository.GetAllBankingDetails();
                 return Ok(bankingDetails);
             }
+            catch(EmptyResultException ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                
+                return StatusCode(500, "An unexpected error occured,please try later");
             }
         }
         [HttpGet("{bankId}")]
@@ -42,9 +48,13 @@ namespace PensionManagementBankingService.Controller
                 }
                 return Ok(bankingDetails);
             }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, "An unexpected error occured, please try later");
             }
         }
         [HttpPost]
@@ -75,9 +85,13 @@ namespace PensionManagementBankingService.Controller
                 };
                 return Ok(bank);
             }
+            catch(DuplicateRecordException ex)
+            {
+                return Conflict(ex.Message);
+            }
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, "An unexpected error occured, please try later");
             }
         }
         [HttpPut("{bankId}")]
@@ -103,9 +117,13 @@ namespace PensionManagementBankingService.Controller
                 }
                 return Ok(updatedBankingDetails);
             }
+            catch(NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch(Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, "An unexpected error occured, please try later");
             }
         }
         [HttpDelete("{bankId}")]
@@ -116,9 +134,13 @@ namespace PensionManagementBankingService.Controller
                 _bankingRepository.DeleteBankingDetailsById(bankId);
                 return Ok();
             }
+            catch(NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, "An unexpected error occured, please try later");
             }
         }
         [HttpGet("GetBankIdByPensionerId")]
@@ -129,9 +151,13 @@ namespace PensionManagementBankingService.Controller
                 var result = await _bankingRepository.GetBankDetailsByPensionerId(pensionerId);
                 return Ok(result);
             }
+            catch(NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, "An unexpected error occured, please try later");
             }
         }
     }

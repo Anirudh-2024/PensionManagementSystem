@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PensionManagementUserLoginService.DTO;
+using PensionManagementUserLoginService.ExceptionHandling;
 using PensionManagementUserLoginService.Models.Repository.Interfaces;
 
 namespace PensionManagementUserLoginService.Controller
@@ -22,32 +23,46 @@ namespace PensionManagementUserLoginService.Controller
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO request)
         {
-            var identityUser = await _userManager.FindByEmailAsync(request.Email);
-           
-            if (identityUser is not null)
+            try
             {
-               var checkPassportResult = await _userManager.CheckPasswordAsync(identityUser, request.Password);
-                
-                if (checkPassportResult)
+                var identityUser = await _userManager.FindByEmailAsync(request.Email);
+                if (identityUser == null)
                 {
-                    var roles = await _userManager.GetRolesAsync(identityUser);
-
-                    var jwtToken=_tokenRepository.CreateJwtToken(identityUser,roles.ToList());
-                    var response = new LoginRespondDTO()
-                    {
-                        
-                        Email = request.Email,
-                        Roles = roles.ToList(),
-                        Token = jwtToken,
-                        Id = identityUser.Id
-                    };
-                    return Ok(response);
+                    throw new NotFoundException("User Not Found.");
                 }
+                var checkPassportResult = await _userManager.CheckPasswordAsync(identityUser, request.Password);
+                if (!checkPassportResult)
+                {
+                    throw new EmptyResultException("Password is incorrect");
+                }
+                var roles = await _userManager.GetRolesAsync(identityUser);
 
+                var jwtToken = _tokenRepository.CreateJwtToken(identityUser, roles.ToList());
+                var response = new LoginRespondDTO()
+                {
 
+                    Email = request.Email,
+                    Roles = roles.ToList(),
+                    Token = jwtToken,
+                    Id = identityUser.Id
+                };
+                return Ok(response);
             }
-            ModelState.AddModelError("", "Email or passward is Incorrect");
-            return ValidationProblem(ModelState);
+            catch (NotFoundException ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return NotFound(ModelState);
+            }
+            catch(EmptyResultException ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return NotFound(ModelState);
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, "An unexpected error occured,please try later");
+            }
+           
             
         }
 
@@ -98,15 +113,27 @@ namespace PensionManagementUserLoginService.Controller
         [HttpPost]
         public async Task<IActionResult> ForgotPassword( [FromBody] LoginRequestDTO loginRequest)
         {
-            var result = await _userManager.FindByEmailAsync(loginRequest.Email);
-            var tokenResult = await _userManager.GeneratePasswordResetTokenAsync(result);
-            if(result != null)
+            
+            try
             {
+                var result = await _userManager.FindByEmailAsync(loginRequest.Email);
+                if(result == null)
+                {
+                    throw new NotFoundException("user Not Found");
+                }
+                var tokenResult = await _userManager.GeneratePasswordResetTokenAsync(result);
                 var res = await _userManager.ResetPasswordAsync(result, tokenResult, loginRequest.Password);
                 return Ok(res);
             }
-            ModelState.AddModelError("", "Incorrect Email");
-            return ValidationProblem(ModelState);
+            catch (NotFoundException ex)
+            {
+                ModelState.AddModelError("", ex.Message);
+                return NotFound(ModelState);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An unexpected error occured,please try later");
+            }
         }
      
     }
