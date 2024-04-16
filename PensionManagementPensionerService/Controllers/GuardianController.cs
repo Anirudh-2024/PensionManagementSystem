@@ -34,12 +34,12 @@ namespace PensionManagementPensionerService.Controllers
             }
             catch (EmptyResultException ex)
             {
-                _logger.LogInformation("Empty result returned while retrieving guardian details");
+                _logger.LogError("Empty result returned while retrieving guardian details");
                 return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogInformation("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
+                _logger.LogError("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
                 return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
         }
@@ -68,12 +68,12 @@ namespace PensionManagementPensionerService.Controllers
             }
             catch (NotFoundException ex)
             {
-                _logger.LogInformation("No guardian details found.");
+                _logger.LogError("No guardian details found.");
                 return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogInformation("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
+                _logger.LogError("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
                 return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
         }
@@ -101,12 +101,12 @@ namespace PensionManagementPensionerService.Controllers
             }
             catch (DuplicateRecordException ex)
             {
-                _logger.LogInformation("Attempted to add a duplicate record");
+                _logger.LogError("Attempted to add a duplicate record");
                 return Conflict(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogInformation("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
+                _logger.LogError("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
                 return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
 
@@ -147,12 +147,12 @@ namespace PensionManagementPensionerService.Controllers
             }
             catch (NotFoundException ex)
             {
-                _logger.LogInformation("No guardian details found.");
+                _logger.LogError("No guardian details found.");
                 return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogInformation("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
+                _logger.LogError("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
                 return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
         }
@@ -169,12 +169,12 @@ namespace PensionManagementPensionerService.Controllers
             }
             catch (NotFoundException ex)
             {
-                _logger.LogInformation("No guardian details found.");
+                _logger.LogError("No guardian details found.");
                 return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogInformation("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
+                _logger.LogError("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
                 return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
         }
@@ -191,12 +191,12 @@ namespace PensionManagementPensionerService.Controllers
             }
             catch (NotFoundException ex)
             {
-                _logger.LogInformation("No guardian details found.");
+                _logger.LogError("No guardian details found.");
                 return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
-                _logger.LogInformation("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
+                _logger.LogError("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
                 return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
 

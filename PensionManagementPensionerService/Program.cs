@@ -9,8 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 var logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File("Logs/Pensioner_Log1.txt", rollingInterval:RollingInterval.Hour)
-    .MinimumLevel.Information()    
+    .WriteTo.File("Logs/Pensioner_Log1.txt", rollingInterval:RollingInterval.Minute) 
     .CreateLogger();
 
 builder.Logging.ClearProviders();
