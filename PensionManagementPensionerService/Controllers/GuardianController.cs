@@ -5,7 +5,7 @@ using PensionManagementPensionerService.Models;
 using PensionManagementPensionerService.DTO;
 using PensionManagementPensionerService.Models.Context;
 using Microsoft.AspNetCore.Http.HttpResults;
-using PensionManagementPensionerService.ExceptionalHandling;
+using static PensionManagementPensionerService.ExceptionalHandling.PensionerServiceException;
 
 namespace PensionManagementPensionerService.Controllers
 {
