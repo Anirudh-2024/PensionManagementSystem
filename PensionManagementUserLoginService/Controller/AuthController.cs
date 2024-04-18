@@ -28,12 +28,12 @@ namespace PensionManagementUserLoginService.Controller
                 var identityUser = await _userManager.FindByEmailAsync(request.Email);
                 if (identityUser == null)
                 {
-                    throw new NotFoundException("User Not Found.");
+                    throw new loginExceptions(loginExceptions.ErrorType.NotFound, "User Not Found.");
                 }
                 var checkPassportResult = await _userManager.CheckPasswordAsync(identityUser, request.Password);
                 if (!checkPassportResult)
                 {
-                    throw new EmptyResultException("Password is incorrect");
+                    throw new loginExceptions(loginExceptions.ErrorType.EmptyResult, "Password is incorrect");
                 }
                 var roles = await _userManager.GetRolesAsync(identityUser);
 
@@ -48,16 +48,21 @@ namespace PensionManagementUserLoginService.Controller
                 };
                 return Ok(response);
             }
-            catch (NotFoundException ex)
+            catch(loginExceptions ex)
             {
-                ModelState.AddModelError("", ex.Message);
-                return NotFound(ModelState);
+                switch(ex.Type)
+                {
+                    case loginExceptions.ErrorType.NotFound:
+                        ModelState.AddModelError("", ex.Message);
+                        return NotFound(ModelState);
+                    case loginExceptions.ErrorType.EmptyResult:
+                        ModelState.AddModelError("", ex.Message);
+                        return NotFound(ModelState);
+                    default:
+                        return BadRequest();
+                }
             }
-            catch(EmptyResultException ex)
-            {
-                ModelState.AddModelError("", ex.Message);
-                return NotFound(ModelState);
-            }
+            
             catch(Exception ex)
             {
                 return StatusCode(500, "An unexpected error occured,please try later");
@@ -119,16 +124,25 @@ namespace PensionManagementUserLoginService.Controller
                 var result = await _userManager.FindByEmailAsync(loginRequest.Email);
                 if(result == null)
                 {
-                    throw new NotFoundException("user Not Found");
+                    throw new loginExceptions(loginExceptions.ErrorType.NotFound, "user Not Found");
                 }
                 var tokenResult = await _userManager.GeneratePasswordResetTokenAsync(result);
                 var res = await _userManager.ResetPasswordAsync(result, tokenResult, loginRequest.Password);
                 return Ok(res);
             }
-            catch (NotFoundException ex)
+            catch (loginExceptions ex)
             {
-                ModelState.AddModelError("", ex.Message);
-                return NotFound(ModelState);
+
+                switch(ex.Type)
+                {
+                    case loginExceptions.ErrorType.NotFound:
+                        ModelState.AddModelError("", ex.Message);
+                        return NotFound(ModelState);
+                    case loginExceptions.ErrorType.EmptyResult:
+                        return BadRequest();
+                    default:
+                        return BadRequest();
+                }
             }
             catch (Exception ex)
             {

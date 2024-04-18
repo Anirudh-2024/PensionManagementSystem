@@ -26,9 +26,19 @@ namespace PensionManagementBankingService.Controller
                 var bankingDetails = await _bankingRepository.GetAllBankingDetails();
                 return Ok(bankingDetails);
             }
-            catch(EmptyResultException ex)
+            catch (BankingExceptions ex)
             {
-                return NotFound(ex.Message);
+                switch (ex.Type)
+                {
+                    case BankingExceptions.ErrorType.DuplicateRecord:
+                        return Conflict(ex.Message);
+                    case BankingExceptions.ErrorType.EmptyResult:
+                        return NotFound(ex.Message);
+                    case BankingExceptions.ErrorType.NotFound:
+                        return NotFound(ex.Message);
+                    default:
+                        throw;
+                }
             }
             catch (Exception ex)
             {
@@ -48,9 +58,19 @@ namespace PensionManagementBankingService.Controller
                 }
                 return Ok(bankingDetails);
             }
-            catch (NotFoundException ex)
+            catch (BankingExceptions ex)
             {
-                return NotFound(ex.Message);
+                switch (ex.Type)
+                {
+                    case BankingExceptions.ErrorType.DuplicateRecord:
+                        return Conflict(ex.Message);
+                    case BankingExceptions.ErrorType.EmptyResult:
+                        return NotFound(ex.Message);
+                    case BankingExceptions.ErrorType.NotFound:
+                        return NotFound(ex.Message);
+                    default:
+                        throw;
+                }
             }
             catch (Exception ex)
             {
@@ -85,11 +105,21 @@ namespace PensionManagementBankingService.Controller
                 };
                 return Ok(bank);
             }
-            catch(DuplicateRecordException ex)
+            catch (BankingExceptions ex)
             {
-                return Conflict(ex.Message);
+                switch (ex.Type)
+                {
+                    case BankingExceptions.ErrorType.DuplicateRecord:
+                        return Conflict(ex.Message);
+                    case BankingExceptions.ErrorType.EmptyResult:
+                        return NotFound(ex.Message);
+                    case BankingExceptions.ErrorType.NotFound:
+                        return NotFound(ex.Message);
+                    default:
+                        throw;
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return StatusCode(500, "An unexpected error occured, please try later");
             }
@@ -117,11 +147,22 @@ namespace PensionManagementBankingService.Controller
                 }
                 return Ok(updatedBankingDetails);
             }
-            catch(NotFoundException ex)
+            catch (BankingExceptions ex)
             {
-                return NotFound(ex.Message);
+                switch (ex.Type)
+                {
+                    case BankingExceptions.ErrorType.DuplicateRecord:
+                        return Conflict(ex.Message);
+                    case BankingExceptions.ErrorType.EmptyResult:
+                        return NotFound(ex.Message);
+                    case BankingExceptions.ErrorType.NotFound:
+                        return NotFound(ex.Message);
+                    default:
+                        throw;
+                }
             }
-            catch(Exception ex)
+
+            catch (Exception ex)
             {
                 return StatusCode(500, "An unexpected error occured, please try later");
             }
@@ -134,10 +175,21 @@ namespace PensionManagementBankingService.Controller
                 _bankingRepository.DeleteBankingDetailsById(bankId);
                 return Ok();
             }
-            catch(NotFoundException ex)
+            catch (BankingExceptions ex)
             {
-                return NotFound(ex.Message);
+                switch (ex.Type)
+                {
+                    case BankingExceptions.ErrorType.DuplicateRecord:
+                        return Conflict(ex.Message);
+                    case BankingExceptions.ErrorType.EmptyResult:
+                        return NotFound(ex.Message);
+                    case BankingExceptions.ErrorType.NotFound:
+                        return NotFound(ex.Message);
+                    default:
+                        throw;
+                }
             }
+
             catch (Exception ex)
             {
                 return StatusCode(500, "An unexpected error occured, please try later");
@@ -151,9 +203,19 @@ namespace PensionManagementBankingService.Controller
                 var result = await _bankingRepository.GetBankDetailsByPensionerId(pensionerId);
                 return Ok(result);
             }
-            catch(NotFoundException ex)
+            catch(BankingExceptions ex)
             {
-                return NotFound(ex.Message);
+                switch(ex.Type)
+                {
+                    case BankingExceptions.ErrorType.DuplicateRecord:
+                        return Conflict(ex.Message);
+                    case BankingExceptions.ErrorType.EmptyResult:
+                        return NotFound(ex.Message);
+                    case BankingExceptions.ErrorType.NotFound:
+                        return NotFound(ex.Message);
+                    default:
+                        throw;
+                }
             }
             catch (Exception ex)
             {

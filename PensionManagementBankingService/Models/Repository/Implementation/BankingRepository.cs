@@ -23,7 +23,7 @@ namespace PensionManagementBankingService.Models.Repository.Implementation
                 var existingRecord = await _appDbContext.BankingDetails.FirstOrDefaultAsync(u => u.PensionerId == bankingDetails.PensionerId);
                 if (existingRecord != null)
                 {
-                    throw new DuplicateRecordException("An Duplicate record already exist with same pensioner id");
+                    throw new BankingExceptions(BankingExceptions.ErrorType.DuplicateRecord, "An Duplicate record already exist with same pensioner id");
                 }
                 BankingDetails addbanking = new BankingDetails
                 {
@@ -55,7 +55,7 @@ namespace PensionManagementBankingService.Models.Repository.Implementation
                 var result = _appDbContext.BankingDetails.FirstOrDefault(id => id.BankId == bankId);
                 if(result == null)
                 {
-                    throw new NotFoundException("Banking Details not found for given Bank Id.");
+                    throw new BankingExceptions(BankingExceptions.ErrorType.NotFound, "Banking Details not found for given Bank Id.");
                 }
                 _appDbContext.BankingDetails.Remove(result);
                 _appDbContext.SaveChanges();
@@ -77,7 +77,7 @@ namespace PensionManagementBankingService.Models.Repository.Implementation
                 var result= await _appDbContext.BankingDetails.ToListAsync();
                 if(result.Count == 0)
                 {
-                    throw new EmptyResultException("There are no guardian details available in databae.");
+                    throw new BankingExceptions(BankingExceptions.ErrorType.EmptyResult, "There are no guardian details available in databae.");
                 }
                 return result;
             }
@@ -95,7 +95,7 @@ namespace PensionManagementBankingService.Models.Repository.Implementation
                 var result= await _appDbContext.BankingDetails.FirstOrDefaultAsync(id => id.BankId == bankId);
                 if(result == null)
                 {
-                    throw new NotFoundException("Banking Details not Found for given Id.");
+                    throw new BankingExceptions(BankingExceptions.ErrorType.NotFound, "Banking Details not Found for given Id.");
                 }
                 return result;
 
@@ -114,7 +114,7 @@ namespace PensionManagementBankingService.Models.Repository.Implementation
                 var result = await _appDbContext.BankingDetails.FirstOrDefaultAsync(id => id.BankId == bankId);
                 if(result == null)
                 {
-                    throw new NotFoundException("Guardian details not found for given Banking Id.");
+                    throw new BankingExceptions(BankingExceptions.ErrorType.NotFound, "Guardian details not found for given Banking Id.");
                 }
                 result.PanNumber = bankingDetails.PanNumber;
                 result.AccountNumber = bankingDetails.AccountNumber;
@@ -139,7 +139,7 @@ namespace PensionManagementBankingService.Models.Repository.Implementation
                                       .FirstOrDefaultAsync(b => b.PensionerId== pensionerId);
                 if(bankDetails == null)
                 {
-                    throw new NotFoundException("BankDetails Not Found for given Pensioner Id.");
+                    throw new BankingExceptions(BankingExceptions.ErrorType.NotFound, "BankDetails Not Found for given Pensioner Id.");
                 }
                 return bankDetails.BankId;
 
