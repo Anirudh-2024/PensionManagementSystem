@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using PensionManagementPensionerService.ExceptionalHandling;
 using PensionManagementPensionerService.Models;
 using PensionManagementPensionerService.Models.Repository.Interfaces;
-using static PensionManagementPensionerService.ExceptionalHandling.PensionerServiceException;
 
 namespace PensionManagementPensionerService.Controllers
 {

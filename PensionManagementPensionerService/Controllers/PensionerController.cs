@@ -5,7 +5,6 @@ using PensionManagementPensionerService.Models;
 using PensionManagementPensionerService.DTO;
 using PensionManagementPensionerService.ExceptionalHandling;
 using Microsoft.EntityFrameworkCore;
-using static PensionManagementPensionerService.ExceptionalHandling.PensionerServiceException;
 
 namespace PensionManagementPensionerService.Controllers
 {
