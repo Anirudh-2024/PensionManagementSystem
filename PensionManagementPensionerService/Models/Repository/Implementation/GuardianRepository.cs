@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PensionManagementPensionerService.ExceptionalHandling;
 using PensionManagementPensionerService.Models.Context;
 using PensionManagementPensionerService.Models.Repository.Interfaces;
+using static PensionManagementPensionerService.ExceptionalHandling.PensionerServiceException;
 
 namespace PensionManagementPensionerService.Models.Repository.Implementation
 {
