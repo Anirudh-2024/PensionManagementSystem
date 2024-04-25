@@ -28,13 +28,9 @@ namespace PensionManagementPensionerService.Controllers
                 var result = await _guardianRepository.GetAllGuardianDetails();
                 return Ok(result);
             }
-            catch (EmptyResultException ex)
-            {
-                return NotFound(ex.Message);
-            }
             catch (Exception ex)
             {
-                return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
+                return BadRequest(ex.Message);
             }
         }
 
@@ -58,13 +54,9 @@ namespace PensionManagementPensionerService.Controllers
                 };
                 return Ok(response);
             }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
             catch (Exception ex)
             {
-                return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
+                return BadRequest(ex.Message);
             }
         }
 
@@ -87,13 +79,9 @@ namespace PensionManagementPensionerService.Controllers
                 var result = await _guardianRepository.AddGuardian(request);
                 return Ok(result);
             }
-            catch (DuplicateRecordException ex)
-            {
-                return Conflict(ex.Message);
-            }
             catch (Exception ex)
             {
-                return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
+                return BadRequest(ex.Message);
             }
 
         }
@@ -129,13 +117,9 @@ namespace PensionManagementPensionerService.Controllers
                 
                 return Ok(response);
             }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
             catch (Exception ex)
             {
-                return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
+                return BadRequest(ex.Message);
             }
         }
 
@@ -147,13 +131,9 @@ namespace PensionManagementPensionerService.Controllers
                 _guardianRepository.DeleteGuardianById(guardianId);
                 return NoContent();
             }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
             catch (Exception ex)
             {
-                return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
+                return BadRequest(ex.Message);
             }
         }
 
@@ -165,16 +145,12 @@ namespace PensionManagementPensionerService.Controllers
                 var result = await _guardianRepository.GetGuadianIdByPensionerId(pensionerId);
                 return Ok(result);
             }
-            catch (NotFoundException ex)
-            {
-                return NotFound(ex.Message);
-            }
+
             catch (Exception ex)
             {
-                return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
+
+                throw new Exception("Error",ex);
             }
-
-
         }
     }
 }
