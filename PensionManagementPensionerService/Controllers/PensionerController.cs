@@ -29,7 +29,7 @@ namespace PensionManagementPensionerService.Controllers
             {
                 _logger.LogInformation("Attempting to retrieve all pensioner details.");
                 var result = await _pensionerRepository.GetAllPensionerDetails();
-                _logger.LogInformation("Successfully retrieved all pensioner details: {@result}", result);
+                _logger.LogInformation("Successfully retrieved all pensioner details");
                 return Ok(result);
                 
             }
@@ -52,7 +52,7 @@ namespace PensionManagementPensionerService.Controllers
             {
                 _logger.LogInformation("Attempting to retrieve pensioner details by pensioner Id.");
                 var result = await _pensionerRepository.GetPensionerDetailsById(pensionerId);
-                _logger.LogInformation("Successfully retrieved pensioner details by Pensioner Id: {@result}", result);
+                _logger.LogInformation("Successfully retrieved pensioner details by Pensioner Id: {@result}", result.PensionerId);
                 var response = new PensionResponseDTO
                 {
                     pensionerId = result.PensionerId,
@@ -124,7 +124,7 @@ namespace PensionManagementPensionerService.Controllers
                 };
 
                 var result = await _pensionerRepository.AddPensionerDetails(request);
-                _logger.LogInformation("Successfully added pensioner details. {@result}", result);
+                _logger.LogInformation("Successfully added pensioner details. {@result}", result.PensionerId);
                 return Ok(result);
 
             }
@@ -161,7 +161,7 @@ namespace PensionManagementPensionerService.Controllers
 
                 };
                 var result = await _pensionerRepository.UpdatePensionerDetailsById(pensionerId, request);
-                _logger.LogInformation("Successfully updated pensioner details by Pensioner Id {@result}", result);
+                _logger.LogInformation("Successfully updated pensioner details by Pensioner Id {@result}", result.PensionerId);
                 var response = new PensionResponseDTO
                 {
                     pensionerId=result.PensionerId,
@@ -197,7 +197,7 @@ namespace PensionManagementPensionerService.Controllers
             {
                 _logger.LogInformation("Attempting to delete pensioner details by pensioner Id.");
                 _pensionerRepository.DeletePensionerDetailsById(pensionerId);
-                _logger.LogInformation("Successfully deleted pensioner details by Pensioner Id.");
+                _logger.LogInformation("Successfully deleted pensioner details by Pensioner Id {@pensionerId}.", pensionerId);
                 return NoContent();
             }
             catch(NotFoundException ex)

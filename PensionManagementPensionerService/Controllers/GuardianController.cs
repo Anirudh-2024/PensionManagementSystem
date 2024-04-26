@@ -29,7 +29,7 @@ namespace PensionManagementPensionerService.Controllers
             {
                 _logger.LogInformation("Attempting to retrieve all guardian details.");
                 var result = await _guardianRepository.GetAllGuardianDetails();
-                _logger.LogInformation("Successfully retrieved all guardian details {@result}", result);
+                _logger.LogInformation("Successfully retrieved all guardian details");
                 return Ok(result);
             }
             catch (EmptyResultException ex)
@@ -51,7 +51,7 @@ namespace PensionManagementPensionerService.Controllers
             {
                 _logger.LogInformation("Attempting to retrieve guardian details by guardian Id.");
                 var result = await _guardianRepository.GetGuardianById(guardianId);
-                _logger.LogInformation("Successfully retrieved guardian details by guardian Id: {@result}", result);
+                _logger.LogInformation("Successfully retrieved guardian details by guardian Id: {@result}", result.GuardianId);
                 var response = new GuardianResponseDTO
                 {
                     GuardianId = result.GuardianId,
@@ -96,7 +96,7 @@ namespace PensionManagementPensionerService.Controllers
                 };
 
                 var result = await _guardianRepository.AddGuardian(request);
-                _logger.LogInformation("Successfully added guardian details : {@result}", result);
+                _logger.LogInformation("Successfully added guardian details : {@result}", result.GuardianId);
                 return Ok(result);
             }
             catch (DuplicateRecordException ex)
@@ -130,7 +130,7 @@ namespace PensionManagementPensionerService.Controllers
                 };
                 
                 var result = await _guardianRepository.UpdateGuardianById(guardianId, request);
-                _logger.LogInformation("Successfully updated guardian details by guardian Id {@result}", result);
+                _logger.LogInformation("Successfully updated guardian details by guardian Id {@result}", result.GuardianId);
                 var response = new GuardianResponse
                 {
                     GuardianId = result.GuardianId,
@@ -164,7 +164,7 @@ namespace PensionManagementPensionerService.Controllers
             {
                 _logger.LogInformation("Attempting to delete guardian details by guardian Id.");
                 _guardianRepository.DeleteGuardianById(guardianId);
-                _logger.LogInformation("Successfully deleted guardian details");
+                _logger.LogInformation("Successfully deleted guardian details {@guardianId}", guardianId);
                 return NoContent();
             }
             catch (NotFoundException ex)
