@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using PensionManagementPensionerService.Models.Repository.Interfaces;
 using PensionManagementPensionerService.Models;
 using PensionManagementPensionerService.DTO;
+using PensionManagementPensionerService.ExceptionalHandling;
+using PensionManagementPensionerService.Models.Repository.Implementation;
 
 namespace PensionManagementPensionerService.Controllers
 {
@@ -23,11 +25,15 @@ namespace PensionManagementPensionerService.Controllers
             try
             {
                 var result = await _pensionerRepository.GetAllPensionerDetails();
+                if (result.Count() == 0)
+                {
+                    throw new PensionerServiceException("No pensioner details found.");
+                }
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (PensionerServiceException ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(404, ex.Message);
             }
         }
 
@@ -37,6 +43,10 @@ namespace PensionManagementPensionerService.Controllers
             try
             {
                 var result = await _pensionerRepository.GetPensionerDetailsById(pensionerId);
+                if (result == null)
+                {
+                    throw new PensionerServiceException("No pensioner details found for the given pensionerID.");
+                }
                 var response = new PensionResponseDTO
                 {
                     pensionerId = result.PensionerId,
@@ -54,9 +64,9 @@ namespace PensionManagementPensionerService.Controllers
                 };
                 return Ok(response);
             }
-            catch (Exception ex)
+            catch (PensionerServiceException ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(404, ex.Message);
             }
         }
         [HttpGet("GetPensionerIdById")]
@@ -65,11 +75,15 @@ namespace PensionManagementPensionerService.Controllers
             try
             {
                 var result = await _pensionerRepository.GetPensionerIdById(userId);
+                if (result == null)
+                {
+                    throw new PensionerServiceException("No pensioner id found for the given userID.");
+                }
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (PensionerServiceException ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(404, ex.Message);
             }
         }
 
@@ -78,6 +92,11 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
+                var existingdetails = _pensionerRepository.GetPensionerIdById(pensionerDetails.Id);
+                if (existingdetails != null)
+                {
+                    throw new PensionerServiceException("A pensioner with the same details already exists.");
+                }
                 var request = new PensionerDetails
                 {
                     FullName = pensionerDetails.FullName,
@@ -96,9 +115,9 @@ namespace PensionManagementPensionerService.Controllers
                 return Ok(result);
 
             }
-            catch (Exception ex)
+            catch (PensionerServiceException ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(409, ex.Message);
             }
 
         }
@@ -108,6 +127,12 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
+                var pensioner = await _pensionerRepository.GetPensionerDetailsById(pensionerId);
+                if (pensioner == null)
+                {
+                    throw new PensionerServiceException("No pensioner details found for the given pensionerID.");
+
+                }
                 var request = new PensionerDetails
                 {
                     FullName = pensionerDetails.FullName,
@@ -138,9 +163,9 @@ namespace PensionManagementPensionerService.Controllers
                 };
                 return Ok(response);
             }
-            catch (Exception ex)
+            catch (PensionerServiceException ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(404, ex.Message);
             }
         }
 
@@ -149,12 +174,17 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
+                var result = await _pensionerRepository.GetPensionerDetailsById(pensionerId);
+                if (result == null)
+                {
+                    throw new PensionerServiceException("No pensioner details found for the given pensionerID.");
+                }
                 _pensionerRepository.DeletePensionerDetailsById(pensionerId);
                 return NoContent();
             }
-            catch (Exception ex)
+            catch (PensionerServiceException ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(404, ex.Message);
             }
         }
 

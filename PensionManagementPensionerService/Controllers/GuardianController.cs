@@ -5,7 +5,7 @@ using PensionManagementPensionerService.Models;
 using PensionManagementPensionerService.DTO;
 using PensionManagementPensionerService.Models.Context;
 using Microsoft.AspNetCore.Http.HttpResults;
-using static PensionManagementPensionerService.ExceptionalHandling.PensionerServiceException;
+using PensionManagementPensionerService.ExceptionalHandling;
 
 namespace PensionManagementPensionerService.Controllers
 {
@@ -25,12 +25,17 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
+               
                 var result = await _guardianRepository.GetAllGuardianDetails();
+                if (result.Count() == 0)
+                {
+                    throw new PensionerServiceException("No guardian details found.");
+                }
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (PensionerServiceException ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(404, ex.Message);
             }
         }
 
@@ -40,6 +45,10 @@ namespace PensionManagementPensionerService.Controllers
             try
             {
                 var result = await _guardianRepository.GetGuardianById(guardianId);
+                if(result == null)
+                {
+                    throw new PensionerServiceException("No guardian details found for the given guardianID.");
+                }
                 var response = new GuardianResponseDTO
                 {
                     GuardianId = result.GuardianId,
@@ -54,9 +63,9 @@ namespace PensionManagementPensionerService.Controllers
                 };
                 return Ok(response);
             }
-            catch (Exception ex)
+            catch (PensionerServiceException ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(404,ex.Message);
             }
         }
 
@@ -65,6 +74,11 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
+                var existingdetails = _guardianRepository.GetGuadianIdByPensionerId(guardianDetails.PensionerId);
+                if (existingdetails != null)
+                {
+                    throw new PensionerServiceException("A guardian with the same details already exists.");
+                }
                 var request = new GuardianDetails
                 {
                     GuardianName = guardianDetails.GuardianName,
@@ -79,9 +93,9 @@ namespace PensionManagementPensionerService.Controllers
                 var result = await _guardianRepository.AddGuardian(request);
                 return Ok(result);
             }
-            catch (Exception ex)
+            catch (PensionerServiceException ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(409, ex.Message);
             }
 
         }
@@ -91,6 +105,12 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
+                var guardian = await _guardianRepository.GetGuardianById(guardianId);
+                if(guardian == null)
+                {
+                    throw new PensionerServiceException("No guardian details found for the given guardianID.");
+
+                }
                 var request = new GuardianDetails
                 {
                     GuardianName = guardianDetails.GuardianName,
@@ -117,9 +137,9 @@ namespace PensionManagementPensionerService.Controllers
                 
                 return Ok(response);
             }
-            catch (Exception ex)
+            catch (PensionerServiceException ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(404, ex.Message);
             }
         }
 
@@ -128,12 +148,17 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
+                var result = await _guardianRepository.GetGuardianById(guardianId);
+                if (result == null)
+                {
+                    throw new PensionerServiceException("No guardian details found for the given guardianID.");
+                }
                 _guardianRepository.DeleteGuardianById(guardianId);
                 return NoContent();
             }
-            catch (Exception ex)
+            catch (PensionerServiceException ex)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(404, ex.Message);
             }
         }
 
@@ -143,13 +168,16 @@ namespace PensionManagementPensionerService.Controllers
             try
             {
                 var result = await _guardianRepository.GetGuadianIdByPensionerId(pensionerId);
+                if (result == null)
+                {
+                    throw new PensionerServiceException("No guardianId found for the given pensionerID.");
+                }
                 return Ok(result);
             }
 
-            catch (Exception ex)
+            catch (PensionerServiceException ex)
             {
-
-                throw new Exception("Error",ex);
+                return StatusCode(404, ex.Message);
             }
         }
     }
