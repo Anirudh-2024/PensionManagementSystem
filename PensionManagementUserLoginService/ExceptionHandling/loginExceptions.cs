@@ -1,24 +1,21 @@
-﻿namespace PensionManagementUserLoginService.ExceptionHandling
+﻿using System.Net;
+
+namespace PensionManagementUserLoginService.ExceptionHandling
 {
     public class loginExceptions:Exception
     {
-        public enum ErrorType
+        
+        public loginExceptions():base()
         {
-            EmptyResult,
-            NotFound
+               
         }
-        public ErrorType Type { get; }
-        public loginExceptions(ErrorType type):base()
+        public loginExceptions(string message):base(message)
         {
-                Type = type;
+               
         }
-        public loginExceptions(ErrorType type, string message):base(message)
+        public loginExceptions(HttpStatusCode statusCode,string message, Exception innerException) : base(message, innerException)
         {
-                Type= type;
-        }
-        public loginExceptions(ErrorType type, string message, Exception innerException) : base(message, innerException)
-        {
-            Type = type;
+            
         }
     }
 }

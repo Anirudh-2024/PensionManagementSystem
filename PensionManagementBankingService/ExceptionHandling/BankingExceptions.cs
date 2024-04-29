@@ -1,25 +1,21 @@
-﻿namespace PensionManagementBankingService.ExceptionHandling
+﻿using System.Net;
+
+namespace PensionManagementBankingService.ExceptionHandling
 {
     public class BankingExceptions: Exception
     {
-        public enum ErrorType
+       
+        public BankingExceptions():base()
         {
-            DuplicateRecord,
-            EmptyResult,
-            NotFound
+                
         }
-        public ErrorType Type { get; }
-        public BankingExceptions(ErrorType type):base()
+        public BankingExceptions(string message):base(message) 
         {
-                Type = type;
+            
         }
-        public BankingExceptions(ErrorType type, string message):base(message) 
-        {
-            Type = type;
-        }
-        public BankingExceptions(ErrorType type, string message, Exception innerException):base(message, innerException) 
+        public BankingExceptions(HttpStatusCode statusCode,string message, Exception innerException):base(message, innerException) 
         { 
-            Type = type;
+           
         }
       
 
