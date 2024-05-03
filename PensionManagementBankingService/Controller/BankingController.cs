@@ -121,7 +121,7 @@ namespace PensionManagementBankingService.Controller
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("GetBankIdByPensionerId")]
+        [HttpGet("PensionerId/{pensionerId}")]
         public async Task<ActionResult> GetPensionerIdById(Guid pensionerId)
         {
             try
