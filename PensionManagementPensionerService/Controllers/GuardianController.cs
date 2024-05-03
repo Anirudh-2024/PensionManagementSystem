@@ -19,7 +19,7 @@ namespace PensionManagementPensionerService.Controllers
             _guardianRepository = guardianRepository;
         }
 
-        [HttpGet("GetAllGuardianDetails")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<GuardianDetails>>> GetAllGuardianDetails()
         {
             try
@@ -33,7 +33,7 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpGet("GetGuardianDetailsById")]
+        [HttpGet("{guardianId}")]
         public async Task<IActionResult> GetGuardianDetailsById(Guid guardianId)
         {
             try
@@ -43,12 +43,12 @@ namespace PensionManagementPensionerService.Controllers
                 {
                     GuardianId = result.GuardianId,
                     GuardianName = result.GuardianName,
-                    DateOfBirth= result.DateOfBirth,
-                    Relation= result.Relation,
-                    Age= result.Age,
-                    Gender= result.Gender,
-                    PhoneNumber= result.PhoneNumber,
-                    PensionerId= result.PensionerId,
+                    DateOfBirth = result.DateOfBirth,
+                    Relation = result.Relation,
+                    Age = result.Age,
+                    Gender = result.Gender,
+                    PhoneNumber = result.PhoneNumber,
+                    PensionerId = result.PensionerId,
 
                 };
                 return Ok(response);
@@ -59,7 +59,7 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpPost("AddGuardianDetails")]
+        [HttpPost]
         public async Task<ActionResult<GuardianDetails>> AddGuardian([FromBody] GuardianRequestDTO guardianDetails)
         {
             try
@@ -85,7 +85,7 @@ namespace PensionManagementPensionerService.Controllers
 
         }
 
-        [HttpPut("UpdateGuardianById")]
+        [HttpPut]
         public async Task<IActionResult> UpdateGuardianById(Guid guardianId, [FromBody] GuardianRequestDTO guardianDetails)
         {
             try
@@ -100,7 +100,7 @@ namespace PensionManagementPensionerService.Controllers
                     PhoneNumber = guardianDetails.PhoneNumber,
                     PensionerId = guardianDetails.PensionerId,
                 };
-                
+
                 var result = await _guardianRepository.UpdateGuardianById(guardianId, request);
                 var response = new GuardianResponse
                 {
@@ -113,7 +113,7 @@ namespace PensionManagementPensionerService.Controllers
                     PhoneNumber = result.PhoneNumber,
                     PensionerId = result.PensionerId,
                 };
-                
+
                 return Ok(response);
             }
             catch (Exception ex)
@@ -122,7 +122,7 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpDelete("DeleteGuardianById")]
+        [HttpDelete("{guardianId}")] 
         public async Task<IActionResult> DeleteGuardianById(Guid guardianId)
         {
             try
@@ -136,7 +136,7 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpGet ("GetGuardianIdByPensionerId")]
+        [HttpGet ("PensionerId/{pensionerId}")]
         public async Task<ActionResult> GetGuardianIdByPensionerId(Guid pensionerId)
         {
             try
