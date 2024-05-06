@@ -1,11 +1,20 @@
 using Microsoft.EntityFrameworkCore;
+using PensionManagementPensionerService.AutoMapper;
 using PensionManagementPensionerService.Models.Context;
 using PensionManagementPensionerService.Models.Repository.Implementation;
 using PensionManagementPensionerService.Models.Repository.Interfaces;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/Pensioner_Log1.txt", rollingInterval:RollingInterval.Minute) 
+    .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -16,10 +25,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("PMSConnectionString"));
 });
-
+builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddScoped<IPensionPlanRepository, PensionPlanRepository>();
 builder.Services.AddScoped<IPensionerRepository, PensionerRepository>();
 builder.Services.AddScoped<IGuardianRepository, GuardianRepository>();
+
 builder.Services.AddCors(x => x.AddPolicy("corspolicy", build =>
 {
     build.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
