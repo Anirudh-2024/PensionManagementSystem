@@ -20,8 +20,8 @@ namespace PensionManagementPensionerService.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("GetAllPensionerDetails")]
-        public async Task<ActionResult<IEnumerable<PensionResponseDTO>>> GetAllPensionerDetails()
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<PensionerDetails>>> GetAllPensionerDetails()
         {
             try
             {
@@ -34,7 +34,7 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpGet("GetPensionerDetailsById")]
+        [HttpGet("{pensionerId}")]
         public async Task<IActionResult> GetPensionerDetailsById(Guid pensionerId)
         {
             try
@@ -47,7 +47,7 @@ namespace PensionManagementPensionerService.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("GetPensionerIdById")]
+        [HttpGet("UserId/{userId}")]
         public async Task<ActionResult> GetPensionerIdById(string userId)
         {
             try
@@ -61,7 +61,7 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpPost("AddPensionerDetails")]
+        [HttpPost]
         public async Task<ActionResult<PensionerDetails>> AddPensionerDetails([FromBody] PensionerRequestDTO pensionerDetails)
         {
             try
@@ -78,7 +78,7 @@ namespace PensionManagementPensionerService.Controllers
 
         }
 
-        [HttpPut("UpdatePensionerDetailsById")]
+        [HttpPut]
         public async Task<IActionResult> UpdatePensionerDetailsById(Guid pensionerId, [FromBody] PensionerRequestDTO pensionerDetails)
         {
             try
@@ -93,7 +93,7 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpDelete("DeletePensionerById")]
+        [HttpDelete("{pensionerId}")]
         public async Task<IActionResult> DeletePensionerById(Guid pensionerId)
         {
             try

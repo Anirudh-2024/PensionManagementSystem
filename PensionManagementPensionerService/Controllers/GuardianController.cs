@@ -22,8 +22,8 @@ namespace PensionManagementPensionerService.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("GetAllGuardianDetails")]
-        public async Task<ActionResult<IEnumerable<GuardianResponseDTO>>> GetAllGuardianDetails()
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<GuardianDetails>>> GetAllGuardianDetails()
         {
             try
             {
@@ -36,7 +36,7 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpGet("GetGuardianDetailsById")]
+        [HttpGet("{guardianId}")]
         public async Task<IActionResult> GetGuardianDetailsById(Guid guardianId)
         {
             try
@@ -50,7 +50,7 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpPost("AddGuardianDetails")]
+        [HttpPost]
         public async Task<ActionResult<GuardianDetails>> AddGuardian([FromBody] GuardianRequestDTO guardianDetails)
         {
             try
@@ -66,7 +66,7 @@ namespace PensionManagementPensionerService.Controllers
 
         }
 
-        [HttpPut("UpdateGuardianById")]
+        [HttpPut]
         public async Task<IActionResult> UpdateGuardianById(Guid guardianId, [FromBody] GuardianRequestDTO guardianDetails)
         {
             try
@@ -81,7 +81,7 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpDelete("DeleteGuardianById")]
+        [HttpDelete("{guardianId}")] 
         public async Task<IActionResult> DeleteGuardianById(Guid guardianId)
         {
             try
@@ -95,7 +95,7 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpGet ("GetGuardianIdByPensionerId")]
+        [HttpGet ("PensionerId/{pensionerId}")]
         public async Task<ActionResult> GetGuardianIdByPensionerId(Guid pensionerId)
         {
             try

@@ -1,5 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
+using PensionManagementBankingService.AutoMapper;
 using PensionManagementBankingService.Models.Context;
 using PensionManagementBankingService.Models.Repository.Implementation;
 using PensionManagementBankingService.Models.Repository.Interfaces;
@@ -16,6 +17,7 @@ namespace PensionManagementBankingService
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddAutoMapper(typeof(BankingMapping));
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<IBankingRepository, BankingRepository>();

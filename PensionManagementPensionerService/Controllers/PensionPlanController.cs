@@ -17,7 +17,7 @@ namespace PensionManagementPensionerService.Controllers
             _pensionPlanRepository = pensionPlanRepository ;
         }
 
-        [HttpGet("GetAllPensionPlans")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<PensionPlanDetails>>> GetAllPensionPlans()
         {
             try
@@ -31,7 +31,7 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpGet("GetPensionPlanById")]
+        [HttpGet("{pensionPlanId}")]
         public async Task<IActionResult> GetPensionPlanById(Guid pensionPlanId)
         {
             try
@@ -45,7 +45,7 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpPost("AddPensionPlan")]
+        [HttpPost]
         public async Task<ActionResult<PensionPlanDetails>> AddPensionPlan([FromBody] PensionPlanDetails pensionPlanDetails)
         {
             try
@@ -61,7 +61,7 @@ namespace PensionManagementPensionerService.Controllers
            
         }
 
-        [HttpPut("UpdatePensionPlanById")]
+        [HttpPut]
         public async Task<IActionResult> UpdatePensionPlanById(Guid pensionPlanId, [FromBody] PensionPlanDetails pensionPlanDetails)
         {
             try
@@ -75,7 +75,7 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpDelete("DeletePensionPlanById")]
+        [HttpDelete("{pensionPlanId}")]
         public async Task<IActionResult> DeletePensionPlanById(Guid pensionPlanId)
         {
             try
