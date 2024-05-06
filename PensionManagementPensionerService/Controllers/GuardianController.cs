@@ -5,6 +5,7 @@ using PensionManagementPensionerService.Models;
 using PensionManagementPensionerService.DTO;
 using PensionManagementPensionerService.Models.Context;
 using Microsoft.AspNetCore.Http.HttpResults;
+using AutoMapper;
 using PensionManagementPensionerService.ExceptionalHandling;
 
 namespace PensionManagementPensionerService.Controllers
@@ -14,15 +15,17 @@ namespace PensionManagementPensionerService.Controllers
     public class GuardianController : ControllerBase
     {
         private readonly IGuardianRepository _guardianRepository;
+        private readonly IMapper _mapper;
         private readonly ILogger<GuardianController> _logger;
 
-        public GuardianController(IGuardianRepository guardianRepository, ILogger<GuardianController> logger)
+        public GuardianController(IGuardianRepository guardianRepository, ILogger<GuardianController> logger, IMapper mapper)
         {
             _guardianRepository = guardianRepository;
+            _mapper = mapper;
             _logger = logger;
         }
 
-        [HttpGet("GetAllGuardianDetails")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<GuardianDetails>>> GetAllGuardianDetails()
         {
             try
@@ -30,7 +33,7 @@ namespace PensionManagementPensionerService.Controllers
                 _logger.LogInformation("Attempting to retrieve all guardian details.");
                 var result = await _guardianRepository.GetAllGuardianDetails();
                 _logger.LogInformation("Successfully retrieved all guardian details");
-                return Ok(result);
+                return Ok(_mapper.Map<List<GuardianResponseDTO>>(result));
             }
             catch (EmptyResultException ex)
             {
@@ -44,7 +47,7 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpGet("GetGuardianDetailsById")]
+        [HttpGet("{guardianId}")]
         public async Task<IActionResult> GetGuardianDetailsById(Guid guardianId)
         {
             try
@@ -52,19 +55,7 @@ namespace PensionManagementPensionerService.Controllers
                 _logger.LogInformation("Attempting to retrieve guardian details by guardian Id.");
                 var result = await _guardianRepository.GetGuardianById(guardianId);
                 _logger.LogInformation("Successfully retrieved guardian details by guardian Id: {@result}", result.GuardianId);
-                var response = new GuardianResponseDTO
-                {
-                    GuardianId = result.GuardianId,
-                    GuardianName = result.GuardianName,
-                    DateOfBirth= result.DateOfBirth,
-                    Relation= result.Relation,
-                    Age= result.Age,
-                    Gender= result.Gender,
-                    PhoneNumber= result.PhoneNumber,
-                    PensionerId= result.PensionerId,
-
-                };
-                return Ok(response);
+                return Ok(_mapper.Map<GuardianResponseDTO>(result));
             }
             catch (NotFoundException ex)
             {
@@ -78,26 +69,16 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpPost("AddGuardianDetails")]
+        [HttpPost]
         public async Task<ActionResult<GuardianDetails>> AddGuardian([FromBody] GuardianRequestDTO guardianDetails)
         {
             try
             {
                 _logger.LogInformation("Attempting to add guardian details.");
-                var request = new GuardianDetails
-                {
-                    GuardianName = guardianDetails.GuardianName,
-                    DateOfBirth = guardianDetails.DateOfBirth,
-                    Relation = guardianDetails.Relation,
-                    Age = guardianDetails.Age,
-                    Gender = guardianDetails.Gender,
-                    PhoneNumber = guardianDetails.PhoneNumber,
-                    PensionerId = guardianDetails.PensionerId,
-                };
-
+                GuardianDetails request = _mapper.Map<GuardianDetails>(guardianDetails);
                 var result = await _guardianRepository.AddGuardian(request);
                 _logger.LogInformation("Successfully added guardian details : {@result}", result.GuardianId);
-                return Ok(result);
+                return Ok(_mapper.Map<GuardianResponseDTO>(result));
             }
             catch (DuplicateRecordException ex)
             {
@@ -112,38 +93,16 @@ namespace PensionManagementPensionerService.Controllers
 
         }
 
-        [HttpPut("UpdateGuardianById")]
+        [HttpPut]
         public async Task<IActionResult> UpdateGuardianById(Guid guardianId, [FromBody] GuardianRequestDTO guardianDetails)
         {
             try
             {
                 _logger.LogInformation("Attempting to update guardian details by guardian Id.");
-                var request = new GuardianDetails
-                {
-                    GuardianName = guardianDetails.GuardianName,
-                    DateOfBirth = guardianDetails.DateOfBirth,
-                    Relation = guardianDetails.Relation,
-                    Age = guardianDetails.Age,
-                    Gender = guardianDetails.Gender,
-                    PhoneNumber = guardianDetails.PhoneNumber,
-                    PensionerId = guardianDetails.PensionerId,
-                };
-                
+                GuardianDetails request = _mapper.Map<GuardianDetails>(guardianDetails);
                 var result = await _guardianRepository.UpdateGuardianById(guardianId, request);
                 _logger.LogInformation("Successfully updated guardian details by guardian Id {@result}", result.GuardianId);
-                var response = new GuardianResponse
-                {
-                    GuardianId = result.GuardianId,
-                    GuardianName = result.GuardianName,
-                    DateOfBirth = result.DateOfBirth,
-                    Relation = result.Relation,
-                    Age = result.Age,
-                    Gender = result.Gender,
-                    PhoneNumber = result.PhoneNumber,
-                    PensionerId = result.PensionerId,
-                };
-                
-                return Ok(response);
+                 return Ok(_mapper.Map<GuardianResponseDTO>(result));
             }
             catch (NotFoundException ex)
             {
@@ -157,7 +116,7 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpDelete("DeleteGuardianById")]
+        [HttpDelete("{guardianId}")] 
         public async Task<IActionResult> DeleteGuardianById(Guid guardianId)
         {
             try
@@ -179,7 +138,7 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpGet ("GetGuardianIdByPensionerId")]
+        [HttpGet ("PensionerId/{pensionerId}")]
         public async Task<ActionResult> GetGuardianIdByPensionerId(Guid pensionerId)
         {
             try

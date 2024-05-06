@@ -6,6 +6,7 @@ using PensionManagementPensionerService.DTO;
 using PensionManagementPensionerService.ExceptionalHandling;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http.HttpResults;
+using AutoMapper;
 
 namespace PensionManagementPensionerService.Controllers
 {
@@ -14,24 +15,25 @@ namespace PensionManagementPensionerService.Controllers
     public class PensionerController : ControllerBase
     {
         private readonly IPensionerRepository _pensionerRepository;
+        private readonly IMapper _mapper;
         private readonly ILogger<PensionerController> _logger;
 
-        public PensionerController(IPensionerRepository pensionerRepository, ILogger<PensionerController> logger)
+        public PensionerController(IPensionerRepository pensionerRepository, ILogger<PensionerController> logger, IMapper mapper)
         {
             _pensionerRepository = pensionerRepository;
+            _mapper = mapper;
             _logger = logger;
         }
 
-        [HttpGet("GetAllPensionerDetails")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<PensionerDetails>>> GetAllPensionerDetails()
         {
             try
             {
                 _logger.LogInformation("Attempting to retrieve all pensioner details.");
                 var result = await _pensionerRepository.GetAllPensionerDetails();
-                _logger.LogInformation("Successfully retrieved all pensioner details");
-                return Ok(result);
-                
+                _logger.LogInformation("Successfully retrieved all pensioner details");             
+                return Ok(_mapper.Map<List<PensionResponseDTO>>(result));
             }
             catch (EmptyResultException ex)
             {
@@ -45,7 +47,7 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpGet("GetPensionerDetailsById")]
+        [HttpGet("{pensionerId}")]
         public async Task<IActionResult> GetPensionerDetailsById(Guid pensionerId)
         {
             try
@@ -53,22 +55,7 @@ namespace PensionManagementPensionerService.Controllers
                 _logger.LogInformation("Attempting to retrieve pensioner details by pensioner Id.");
                 var result = await _pensionerRepository.GetPensionerDetailsById(pensionerId);
                 _logger.LogInformation("Successfully retrieved pensioner details by Pensioner Id: {@result}", result.PensionerId);
-                var response = new PensionResponseDTO
-                {
-                    pensionerId = result.PensionerId,
-                    FullName = result.FullName,
-                    DateOfBirth = result.DateOfBirth,
-                    Gender = result.Gender,
-                    AadharNumber = result.AadharNumber,
-                    PhoneNumber = result.PhoneNumber,
-                    Address = result.Address,
-                    Age = result.Age,
-                    Id = result.Id,
-                    PensionPlanId = result.PensionPlanId,
-                    PensionPlanDetails = result.PensionPlanDetails,
-
-                };
-                return Ok(response);
+                return Ok(_mapper.Map<PensionResponseDTO>(result));
             }
             catch (NotFoundException ex)
             {
@@ -81,7 +68,7 @@ namespace PensionManagementPensionerService.Controllers
                 return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
         }
-        [HttpGet("GetPensionerIdById")]
+        [HttpGet("UserId/{userId}")]
         public async Task<ActionResult> GetPensionerIdById(string userId)
         {
             try
@@ -103,29 +90,16 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpPost("AddPensionerDetails")]
+        [HttpPost]
         public async Task<ActionResult<PensionerDetails>> AddPensionerDetails([FromBody] PensionerRequestDTO pensionerDetails)
         {
             try
             {
                 _logger.LogInformation("Attempting to add pensioner details.");
-                var request = new PensionerDetails
-                {
-                    FullName = pensionerDetails.FullName,
-                    DateOfBirth = pensionerDetails.DateOfBirth,
-                    Gender = pensionerDetails.Gender,
-                    AadharNumber=pensionerDetails.AadharNumber,
-                    PhoneNumber = pensionerDetails.PhoneNumber,
-                    Address = pensionerDetails.Address, 
-                    Age = pensionerDetails.Age,
-                    Id = pensionerDetails.Id,
-                    PensionPlanId = pensionerDetails.PensionPlanId
-
-                };
-
+                PensionerDetails request = _mapper.Map<PensionerDetails>(pensionerDetails);
                 var result = await _pensionerRepository.AddPensionerDetails(request);
                 _logger.LogInformation("Successfully added pensioner details. {@result}", result.PensionerId);
-                return Ok(result);
+                return Ok(_mapper.Map<PensionResponseDTO>(result));
 
             }
             catch(DuplicateRecordException ex)
@@ -141,42 +115,17 @@ namespace PensionManagementPensionerService.Controllers
 
         }
 
-        [HttpPut("UpdatePensionerDetailsById")]
+        [HttpPut]
         public async Task<IActionResult> UpdatePensionerDetailsById(Guid pensionerId, [FromBody] PensionerRequestDTO pensionerDetails)
         {
             try
             {
                 _logger.LogInformation("Attempting to update pensioner details by pensioner Id.");
-                var request = new PensionerDetails
-                {
-                    FullName = pensionerDetails.FullName,
-                    DateOfBirth= pensionerDetails.DateOfBirth,
-                    Gender = pensionerDetails.Gender,
-                    AadharNumber= pensionerDetails.AadharNumber,
-                    PhoneNumber = pensionerDetails.PhoneNumber,
-                    Address = pensionerDetails.Address,
-                    Age= pensionerDetails.Age,
-                    Id = pensionerDetails.Id,
-                    PensionPlanId= pensionerDetails.PensionPlanId
-
-                };
+                PensionerDetails request = _mapper.Map<PensionerDetails>(pensionerDetails);
                 var result = await _pensionerRepository.UpdatePensionerDetailsById(pensionerId, request);
                 _logger.LogInformation("Successfully updated pensioner details by Pensioner Id {@result}", result.PensionerId);
-                var response = new PensionResponseDTO
-                {
-                    pensionerId=result.PensionerId,
-                    FullName = result.FullName,
-                    DateOfBirth = result.DateOfBirth,
-                    Gender = result.Gender,
-                    AadharNumber=result.AadharNumber,
-                    PhoneNumber = result.PhoneNumber,
-                    Address = result.Address,
-                    Age= result.Age,
-                    Id = result.Id,
-                    PensionPlanId=result.PensionPlanId
+                return Ok(_mapper.Map<PensionResponseDTO>(result));
 
-                };
-                return Ok(response);
             }
             catch (NotFoundException ex)
             {
@@ -190,7 +139,7 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpDelete("DeletePensionerById")]
+        [HttpDelete("{pensionerId}")]
         public async Task<IActionResult> DeletePensionerById(Guid pensionerId)
         {
             try
