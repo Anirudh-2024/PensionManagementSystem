@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PensionManagementPensionerService.Models.Repository.Interfaces;
 using PensionManagementPensionerService.Models;
 using PensionManagementPensionerService.DTO;
+using AutoMapper;
 
 namespace PensionManagementPensionerService.Controllers
 {
@@ -11,10 +12,12 @@ namespace PensionManagementPensionerService.Controllers
     public class PensionerController : ControllerBase
     {
         private readonly IPensionerRepository _pensionerRepository;
+        private readonly IMapper _mapper;
 
-        public PensionerController(IPensionerRepository pensionerRepository)
+        public PensionerController(IPensionerRepository pensionerRepository, IMapper mapper)
         {
             _pensionerRepository = pensionerRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -23,7 +26,7 @@ namespace PensionManagementPensionerService.Controllers
             try
             {
                 var result = await _pensionerRepository.GetAllPensionerDetails();
-                return Ok(result);
+                return Ok(_mapper.Map<List<PensionResponseDTO>>(result));
             }
             catch (Exception ex)
             {
@@ -37,22 +40,7 @@ namespace PensionManagementPensionerService.Controllers
             try
             {
                 var result = await _pensionerRepository.GetPensionerDetailsById(pensionerId);
-                var response = new PensionResponseDTO
-                {
-                    pensionerId = result.PensionerId,
-                    FullName = result.FullName,
-                    DateOfBirth = result.DateOfBirth,
-                    Gender = result.Gender,
-                    AadharNumber = result.AadharNumber,
-                    PhoneNumber = result.PhoneNumber,
-                    Address = result.Address,
-                    Age = result.Age,
-                    Id = result.Id,
-                    PensionPlanId = result.PensionPlanId,
-                    PensionPlanDetails = result.PensionPlanDetails,
-
-                };
-                return Ok(response);
+                return Ok(_mapper.Map<PensionResponseDTO>(result));
             }
             catch (Exception ex)
             {
@@ -78,22 +66,9 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
-                var request = new PensionerDetails
-                {
-                    FullName = pensionerDetails.FullName,
-                    DateOfBirth = pensionerDetails.DateOfBirth,
-                    Gender = pensionerDetails.Gender,
-                    AadharNumber=pensionerDetails.AadharNumber,
-                    PhoneNumber = pensionerDetails.PhoneNumber,
-                    Address = pensionerDetails.Address, 
-                    Age = pensionerDetails.Age,
-                    Id = pensionerDetails.Id,
-                    PensionPlanId = pensionerDetails.PensionPlanId
-
-                };
-
+                PensionerDetails request = _mapper.Map<PensionerDetails>(pensionerDetails);
                 var result = await _pensionerRepository.AddPensionerDetails(request);
-                return Ok(result);
+                return Ok(_mapper.Map<PensionResponseDTO>(result));
 
             }
             catch (Exception ex)
@@ -108,35 +83,9 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
-                var request = new PensionerDetails
-                {
-                    FullName = pensionerDetails.FullName,
-                    DateOfBirth= pensionerDetails.DateOfBirth,
-                    Gender = pensionerDetails.Gender,
-                    AadharNumber= pensionerDetails.AadharNumber,
-                    PhoneNumber = pensionerDetails.PhoneNumber,
-                    Address = pensionerDetails.Address,
-                    Age= pensionerDetails.Age,
-                    Id = pensionerDetails.Id,
-                    PensionPlanId= pensionerDetails.PensionPlanId
-
-                };
+                PensionerDetails request = _mapper.Map<PensionerDetails>(pensionerDetails);
                 var result = await _pensionerRepository.UpdatePensionerDetailsById(pensionerId, request);
-                var response = new PensionResponseDTO
-                {
-                    pensionerId=result.PensionerId,
-                    FullName = result.FullName,
-                    DateOfBirth = result.DateOfBirth,
-                    Gender = result.Gender,
-                    AadharNumber=result.AadharNumber,
-                    PhoneNumber = result.PhoneNumber,
-                    Address = result.Address,
-                    Age= result.Age,
-                    Id = result.Id,
-                    PensionPlanId=result.PensionPlanId
-
-                };
-                return Ok(response);
+                return Ok(_mapper.Map<PensionResponseDTO>(result));
             }
             catch (Exception ex)
             {

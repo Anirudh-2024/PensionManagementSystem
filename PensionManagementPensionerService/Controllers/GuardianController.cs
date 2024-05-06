@@ -5,6 +5,7 @@ using PensionManagementPensionerService.Models;
 using PensionManagementPensionerService.DTO;
 using PensionManagementPensionerService.Models.Context;
 using Microsoft.AspNetCore.Http.HttpResults;
+using AutoMapper;
 
 namespace PensionManagementPensionerService.Controllers
 {
@@ -13,10 +14,12 @@ namespace PensionManagementPensionerService.Controllers
     public class GuardianController : ControllerBase
     {
         private readonly IGuardianRepository _guardianRepository;
+        private readonly IMapper _mapper;
 
-        public GuardianController(IGuardianRepository guardianRepository)
+        public GuardianController(IGuardianRepository guardianRepository, IMapper mapper)
         {
             _guardianRepository = guardianRepository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -25,7 +28,7 @@ namespace PensionManagementPensionerService.Controllers
             try
             {
                 var result = await _guardianRepository.GetAllGuardianDetails();
-                return Ok(result);
+                return Ok(_mapper.Map<List<GuardianResponseDTO>>(result));
             }
             catch (Exception ex)
             {
@@ -39,19 +42,7 @@ namespace PensionManagementPensionerService.Controllers
             try
             {
                 var result = await _guardianRepository.GetGuardianById(guardianId);
-                var response = new GuardianResponseDTO
-                {
-                    GuardianId = result.GuardianId,
-                    GuardianName = result.GuardianName,
-                    DateOfBirth = result.DateOfBirth,
-                    Relation = result.Relation,
-                    Age = result.Age,
-                    Gender = result.Gender,
-                    PhoneNumber = result.PhoneNumber,
-                    PensionerId = result.PensionerId,
-
-                };
-                return Ok(response);
+                return Ok(_mapper.Map<GuardianResponseDTO>(result));
             }
             catch (Exception ex)
             {
@@ -64,19 +55,9 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
-                var request = new GuardianDetails
-                {
-                    GuardianName = guardianDetails.GuardianName,
-                    DateOfBirth = guardianDetails.DateOfBirth,
-                    Relation = guardianDetails.Relation,
-                    Age = guardianDetails.Age,
-                    Gender = guardianDetails.Gender,
-                    PhoneNumber = guardianDetails.PhoneNumber,
-                    PensionerId = guardianDetails.PensionerId,
-                };
-
+                GuardianDetails request = _mapper.Map<GuardianDetails>(guardianDetails);
                 var result = await _guardianRepository.AddGuardian(request);
-                return Ok(result);
+                return Ok(_mapper.Map<GuardianResponseDTO>(result));
             }
             catch (Exception ex)
             {
@@ -90,31 +71,9 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
-                var request = new GuardianDetails
-                {
-                    GuardianName = guardianDetails.GuardianName,
-                    DateOfBirth = guardianDetails.DateOfBirth,
-                    Relation = guardianDetails.Relation,
-                    Age = guardianDetails.Age,
-                    Gender = guardianDetails.Gender,
-                    PhoneNumber = guardianDetails.PhoneNumber,
-                    PensionerId = guardianDetails.PensionerId,
-                };
-
+                GuardianDetails request = _mapper.Map<GuardianDetails>(guardianDetails);
                 var result = await _guardianRepository.UpdateGuardianById(guardianId, request);
-                var response = new GuardianResponse
-                {
-                    GuardianId = result.GuardianId,
-                    GuardianName = result.GuardianName,
-                    DateOfBirth = result.DateOfBirth,
-                    Relation = result.Relation,
-                    Age = result.Age,
-                    Gender = result.Gender,
-                    PhoneNumber = result.PhoneNumber,
-                    PensionerId = result.PensionerId,
-                };
-
-                return Ok(response);
+                return Ok(_mapper.Map<GuardianResponseDTO>(result));
             }
             catch (Exception ex)
             {
