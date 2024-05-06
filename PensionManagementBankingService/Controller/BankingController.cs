@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PensionManagementBankingService.DTO;
 using PensionManagementBankingService.Models;
@@ -12,10 +13,12 @@ namespace PensionManagementBankingService.Controller
     public class BankingController : ControllerBase
     {
         private readonly IBankingRepository _bankingRepository;
+        private readonly IMapper _mapper;
 
-        public BankingController(IBankingRepository bankingRepository)
+        public BankingController(IBankingRepository bankingRepository,IMapper mapper)
         {
             _bankingRepository = bankingRepository;
+            _mapper = mapper;
         }
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BankResponse>>> GetAllBankingDetails()
@@ -52,32 +55,11 @@ namespace PensionManagementBankingService.Controller
         {
             try
             {
-                if(!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-                BankingDetails bankDTO = new BankingDetails
-                {
-                    BankName = bankingDetails.BankName,
-                    BranchName = bankingDetails.BranchName,
-                    AccountNumber = bankingDetails.AccountNumber,
-                    IfscCode = bankingDetails.IfscCode,
-                    PanNumber = bankingDetails.PanNumber,
-                    PensionerId = bankingDetails.PensionerId,
-
-                };
-                var addedBankingDetails = await _bankingRepository.AddBankingDetails(bankDTO);
-                BankResponse bank = new BankResponse
-                {
-                    BankId = addedBankingDetails.BankId,
-                    BankName = addedBankingDetails.BankName,
-                    BranchName = addedBankingDetails.BranchName,
-                    AccountNumber = addedBankingDetails.AccountNumber,
-                    IfscCode = addedBankingDetails.IfscCode,
-                    PanNumber = addedBankingDetails.PanNumber,
-                    PensionerId = addedBankingDetails.PensionerId,
-                };
-                return Ok(bank);
+                
+                var request=_mapper.Map<BankingDetails>(bankingDetails);
+                var addedBankingDetails = await _bankingRepository.AddBankingDetails(request);
+                var response = _mapper.Map<BankResponse>(addedBankingDetails);
+                return Ok(response);
             }
             catch(Exception ex)
             {
@@ -89,21 +71,9 @@ namespace PensionManagementBankingService.Controller
         {
             try
             {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
-                BankingDetails bankDTO = new BankingDetails
-                {
-                    BankName = bankingDetails.BankName,
-                    BranchName = bankingDetails.BranchName,
-                    AccountNumber = bankingDetails.AccountNumber,
-                    IfscCode = bankingDetails.IfscCode,
-                    PanNumber = bankingDetails.PanNumber,
-                    PensionerId = bankingDetails.PensionerId,
-
-                };
-                var updatedBankingDetails = await _bankingRepository.UpdateBankingDetailsById(bankId, bankDTO);
+                
+                var request = _mapper.Map<BankingDetails>(bankingDetails);
+                var updatedBankingDetails = await _bankingRepository.UpdateBankingDetailsById(bankId, request);
                 if(updatedBankingDetails == null)
                 {
                     return NotFound();
@@ -129,7 +99,7 @@ namespace PensionManagementBankingService.Controller
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("GetBankIdByPensionerId")]
+        [HttpGet("PensionerId/{pensionerId}")]
         public async Task<ActionResult> GetPensionerIdById(Guid pensionerId)
         {
             try

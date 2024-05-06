@@ -1,0 +1,192 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:7198"
+  },
+  "Routes": [
+    {
+
+      "DownstreamPathTemplate": "/api/Banking",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7166
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/banking",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET" ]
+    },
+    {
+
+      "DownstreamPathTemplate": "/api/Banking/{bankId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7166
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/banking/{bankId}",
+      "UpstreamHttpMethod": [ "GET", "DELETE" ]
+    },
+    {
+
+      "DownstreamPathTemplate": "/api/Banking/PensionerId/{pensionerId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7166
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/banking/pensionerId/{pensionerId}",
+      "UpstreamHttpMethod": [ "GET" ]
+    }, //banking
+
+    {
+
+      "DownstreamPathTemplate": "/api/guardian",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7082
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/guardian",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET" ]
+    },
+    {
+
+      "DownstreamPathTemplate": "/api/guardian/{guardianId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7082
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/guardian/{guardianId}",
+      "UpstreamHttpMethod": [ "GET", "DELETE" ]
+    },
+    {
+
+      "DownstreamPathTemplate": "/api/guardian/PensionerId/{pensionerId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7082
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/guardian/pensionerId/{pensionerId}",
+      "UpstreamHttpMethod": [ "GET" ]
+    }, //guardian
+
+    {
+
+      "DownstreamPathTemplate": "/api/pensioner",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7082
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/pensioner",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET" ]
+    },
+    {
+
+      "DownstreamPathTemplate": "/api/pensioner/{pensionerId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7082
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/pensioner/{pensionerId}",
+      "UpstreamHttpMethod": [ "GET", "DELETE" ]
+    },
+    {
+
+      "DownstreamPathTemplate": "/api/pensioner/userId/{userId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7082
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/pensioner/userId/{userId}",
+      "UpstreamHttpMethod": [ "GET" ]
+    }, //pensioner
+    {
+
+      "DownstreamPathTemplate": "/api/pensionPlan",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7082
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/pensionPlan",
+      "UpstreamHttpMethod": [ "POST", "PUT", "GET" ]
+    },
+    {
+
+      "DownstreamPathTemplate": "/api/pensionPlan/{pensionPlanId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7082
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/pensionPlan/{pensionPlanId}",
+      "UpstreamHttpMethod": [ "GET", "DELETE" ]
+    },
+
+    {
+
+      "DownstreamPathTemplate": "/api/Auth",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7258
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/auth",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+
+      "DownstreamPathTemplate": "/api/Auth/register",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7258
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/auth/register",
+      "UpstreamHttpMethod": [ "POST" ]
+    },
+    {
+
+      "DownstreamPathTemplate": "/api/Auth/login",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7258
+        }
+      ],
+      "UpstreamPathTemplate": "/gateway/auth/login",
+      "UpstreamHttpMethod": [ "POST" ]
+    }
+  ]
+}
