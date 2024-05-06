@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using PensionManagementPensionerService.AutoMapper;
 using PensionManagementPensionerService.Models.Context;
 using PensionManagementPensionerService.Models.Repository.Implementation;
 using PensionManagementPensionerService.Models.Repository.Interfaces;
@@ -16,10 +17,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("PMSConnectionString"));
 });
-
+builder.Services.AddAutoMapper(typeof(MappingConfig));
 builder.Services.AddScoped<IPensionPlanRepository, PensionPlanRepository>();
 builder.Services.AddScoped<IPensionerRepository, PensionerRepository>();
 builder.Services.AddScoped<IGuardianRepository, GuardianRepository>();
+
 builder.Services.AddCors(x => x.AddPolicy("corspolicy", build =>
 {
     build.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();

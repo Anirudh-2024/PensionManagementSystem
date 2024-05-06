@@ -5,6 +5,7 @@ using PensionManagementPensionerService.Models;
 using PensionManagementPensionerService.DTO;
 using PensionManagementPensionerService.Models.Context;
 using Microsoft.AspNetCore.Http.HttpResults;
+using AutoMapper;
 
 namespace PensionManagementPensionerService.Controllers
 {
@@ -13,19 +14,21 @@ namespace PensionManagementPensionerService.Controllers
     public class GuardianController : ControllerBase
     {
         private readonly IGuardianRepository _guardianRepository;
+        private readonly IMapper _mapper;
 
-        public GuardianController(IGuardianRepository guardianRepository)
+        public GuardianController(IGuardianRepository guardianRepository, IMapper mapper)
         {
             _guardianRepository = guardianRepository;
+            _mapper = mapper;
         }
 
-        [HttpGet("GetAllGuardianDetails")]
+        [HttpGet]
         public async Task<ActionResult<IEnumerable<GuardianDetails>>> GetAllGuardianDetails()
         {
             try
             {
                 var result = await _guardianRepository.GetAllGuardianDetails();
-                return Ok(result);
+                return Ok(_mapper.Map<List<GuardianResponseDTO>>(result));
             }
             catch (Exception ex)
             {
@@ -33,25 +36,13 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpGet("GetGuardianDetailsById")]
+        [HttpGet("{guardianId}")]
         public async Task<IActionResult> GetGuardianDetailsById(Guid guardianId)
         {
             try
             {
                 var result = await _guardianRepository.GetGuardianById(guardianId);
-                var response = new GuardianResponseDTO
-                {
-                    GuardianId = result.GuardianId,
-                    GuardianName = result.GuardianName,
-                    DateOfBirth= result.DateOfBirth,
-                    Relation= result.Relation,
-                    Age= result.Age,
-                    Gender= result.Gender,
-                    PhoneNumber= result.PhoneNumber,
-                    PensionerId= result.PensionerId,
-
-                };
-                return Ok(response);
+                return Ok(_mapper.Map<GuardianResponseDTO>(result));
             }
             catch (Exception ex)
             {
@@ -59,24 +50,14 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpPost("AddGuardianDetails")]
+        [HttpPost]
         public async Task<ActionResult<GuardianDetails>> AddGuardian([FromBody] GuardianRequestDTO guardianDetails)
         {
             try
             {
-                var request = new GuardianDetails
-                {
-                    GuardianName = guardianDetails.GuardianName,
-                    DateOfBirth = guardianDetails.DateOfBirth,
-                    Relation = guardianDetails.Relation,
-                    Age = guardianDetails.Age,
-                    Gender = guardianDetails.Gender,
-                    PhoneNumber = guardianDetails.PhoneNumber,
-                    PensionerId = guardianDetails.PensionerId,
-                };
-
+                GuardianDetails request = _mapper.Map<GuardianDetails>(guardianDetails);
                 var result = await _guardianRepository.AddGuardian(request);
-                return Ok(result);
+                return Ok(_mapper.Map<GuardianResponseDTO>(result));
             }
             catch (Exception ex)
             {
@@ -85,36 +66,14 @@ namespace PensionManagementPensionerService.Controllers
 
         }
 
-        [HttpPut("UpdateGuardianById")]
+        [HttpPut]
         public async Task<IActionResult> UpdateGuardianById(Guid guardianId, [FromBody] GuardianRequestDTO guardianDetails)
         {
             try
             {
-                var request = new GuardianDetails
-                {
-                    GuardianName = guardianDetails.GuardianName,
-                    DateOfBirth = guardianDetails.DateOfBirth,
-                    Relation = guardianDetails.Relation,
-                    Age = guardianDetails.Age,
-                    Gender = guardianDetails.Gender,
-                    PhoneNumber = guardianDetails.PhoneNumber,
-                    PensionerId = guardianDetails.PensionerId,
-                };
-                
+                GuardianDetails request = _mapper.Map<GuardianDetails>(guardianDetails);
                 var result = await _guardianRepository.UpdateGuardianById(guardianId, request);
-                var response = new GuardianResponse
-                {
-                    GuardianId = result.GuardianId,
-                    GuardianName = result.GuardianName,
-                    DateOfBirth = result.DateOfBirth,
-                    Relation = result.Relation,
-                    Age = result.Age,
-                    Gender = result.Gender,
-                    PhoneNumber = result.PhoneNumber,
-                    PensionerId = result.PensionerId,
-                };
-                
-                return Ok(response);
+                return Ok(_mapper.Map<GuardianResponseDTO>(result));
             }
             catch (Exception ex)
             {
@@ -122,7 +81,7 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpDelete("DeleteGuardianById")]
+        [HttpDelete("{guardianId}")] 
         public async Task<IActionResult> DeleteGuardianById(Guid guardianId)
         {
             try
@@ -136,7 +95,7 @@ namespace PensionManagementPensionerService.Controllers
             }
         }
 
-        [HttpGet ("GetGuardianIdByPensionerId")]
+        [HttpGet ("PensionerId/{pensionerId}")]
         public async Task<ActionResult> GetGuardianIdByPensionerId(Guid pensionerId)
         {
             try
