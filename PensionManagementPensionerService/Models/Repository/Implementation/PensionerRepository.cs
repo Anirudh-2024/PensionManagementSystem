@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PensionManagementPensionerService.Models.Context;
 using PensionManagementPensionerService.Models.Repository.Interfaces;
+using static PensionManagementPensionerService.ExceptionalHandling.PensionerServiceException;
 
 namespace PensionManagementPensionerService.Models.Repository.Implementation
 {
@@ -71,14 +72,8 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
         }
         public async Task<Guid?> GetPensionerIdById(string userId)
         {
-                var pensioner = await _appDbContext.PensionerDetails
-                                      .FirstOrDefaultAsync(p => p.Id == userId);
-                if (pensioner != null)
-                {
-                    return pensioner.PensionerId;
-                }
-
-                return null;
+                var pensioner = await _appDbContext.PensionerDetails.FirstOrDefaultAsync(p => p.Id == userId);
+                return pensioner.PensionerId;
         }
     }
 }

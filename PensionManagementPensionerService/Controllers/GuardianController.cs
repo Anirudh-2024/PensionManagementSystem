@@ -6,6 +6,7 @@ using PensionManagementPensionerService.DTO;
 using PensionManagementPensionerService.Models.Context;
 using Microsoft.AspNetCore.Http.HttpResults;
 using AutoMapper;
+using PensionManagementPensionerService.ExceptionalHandling;
 
 namespace PensionManagementPensionerService.Controllers
 {
@@ -15,11 +16,13 @@ namespace PensionManagementPensionerService.Controllers
     {
         private readonly IGuardianRepository _guardianRepository;
         private readonly IMapper _mapper;
+        private readonly ILogger<GuardianController> _logger;
 
-        public GuardianController(IGuardianRepository guardianRepository, IMapper mapper)
+        public GuardianController(IGuardianRepository guardianRepository, ILogger<GuardianController> logger, IMapper mapper)
         {
             _guardianRepository = guardianRepository;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -27,12 +30,25 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
+                _logger.LogInformation("Attempting to retrieve all guardian details.");
                 var result = await _guardianRepository.GetAllGuardianDetails();
+                if (result.Count() == 0)
+                {
+                    throw new PensionerServiceException("No guardian details found.");
+                }
+                
+                _logger.LogInformation("Successfully retrieved all guardian details");
                 return Ok(_mapper.Map<List<GuardianResponseDTO>>(result));
+            }
+            catch (PensionerServiceException ex)
+            {
+                _logger.LogError("Empty result returned while retrieving guardian details");
+                return StatusCode(404, ex.Message);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                _logger.LogError("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
+                return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
         }
 
@@ -41,12 +57,25 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
+                _logger.LogInformation("Attempting to retrieve guardian details by guardian Id.");
                 var result = await _guardianRepository.GetGuardianById(guardianId);
+                if(result == null)
+                {
+                    throw new PensionerServiceException("No guardian details found for the given guardianID.");
+                }
+                _logger.LogInformation("Successfully retrieved guardian details by guardian Id: {@result}", result.GuardianId);
                 return Ok(_mapper.Map<GuardianResponseDTO>(result));
+            }
+            catch (PensionerServiceException ex)
+            {
+                _logger.LogError("No guardian details found.");
+                return StatusCode(404, ex.Message);
+                
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                _logger.LogError("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
+                return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
         }
 
@@ -55,13 +84,26 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
+                _logger.LogInformation("Attempting to add guardian details.");
+                var existingdetails = _guardianRepository.GetGuadianIdByPensionerId(guardianDetails.PensionerId);
+                if (existingdetails != null)
+                {
+                    throw new PensionerServiceException("A guardian with the same details already exists.");
+                }
                 GuardianDetails request = _mapper.Map<GuardianDetails>(guardianDetails);
                 var result = await _guardianRepository.AddGuardian(request);
+                _logger.LogInformation("Successfully added guardian details : {@result}", result.GuardianId);
                 return Ok(_mapper.Map<GuardianResponseDTO>(result));
+            }
+            catch (PensionerServiceException ex)
+            {
+                _logger.LogError("A guardian with the same details already exists.");
+                return StatusCode(409, ex.Message);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                _logger.LogError("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
+                return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
 
         }
@@ -71,13 +113,27 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
+                _logger.LogInformation("Attempting to update guardian details by guardian Id.");
+                var guardian = await _guardianRepository.GetGuardianById(guardianId);
+                if (guardian == null)
+                {
+                    throw new PensionerServiceException("No guardian details found for the given guardianID.");
+
+                }
                 GuardianDetails request = _mapper.Map<GuardianDetails>(guardianDetails);
                 var result = await _guardianRepository.UpdateGuardianById(guardianId, request);
-                return Ok(_mapper.Map<GuardianResponseDTO>(result));
+                _logger.LogInformation("Successfully updated guardian details by guardian Id {@result}", result.GuardianId);
+                 return Ok(_mapper.Map<GuardianResponseDTO>(result));
+            }
+            catch (PensionerServiceException ex)
+            {
+                _logger.LogError("No guardian details found.");
+                return StatusCode(404, ex.Message);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                _logger.LogError("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
+                return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
         }
 
@@ -86,12 +142,25 @@ namespace PensionManagementPensionerService.Controllers
         {
             try
             {
+                _logger.LogInformation("Attempting to delete guardian details by guardian Id.");
+                var result = await _guardianRepository.GetGuardianById(guardianId);
+                if (result == null)
+                {
+                    throw new PensionerServiceException("No guardian details found for the given guardianID.");
+                }
                 _guardianRepository.DeleteGuardianById(guardianId);
+                _logger.LogInformation("Successfully deleted guardian details {@guardianId}", guardianId);
                 return NoContent();
+            }
+            catch (PensionerServiceException ex)
+            {
+                _logger.LogError("No guardian details found.");
+                return StatusCode(404, ex.Message);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                _logger.LogError("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
+                return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
         }
 
@@ -99,16 +168,28 @@ namespace PensionManagementPensionerService.Controllers
         public async Task<ActionResult> GetGuardianIdByPensionerId(Guid pensionerId)
         {
             try
-            {
+            { 
+                _logger.LogInformation("Attempting to retrieve guardianId by pensioner Id.");
                 var result = await _guardianRepository.GetGuadianIdByPensionerId(pensionerId);
+                if (result == null)
+                {
+                    throw new PensionerServiceException("No guardianId found for the given pensionerID.");
+                }
+                _logger.LogInformation("Successfully retrieved guardianId by pensioner Id: {@result}", result);
                 return Ok(result);
             }
 
+            catch (PensionerServiceException ex)
+            {
+                _logger.LogError("No guardianId found for the given pensionerID.");
+                return StatusCode(404, ex.Message);
+            }
             catch (Exception ex)
             {
-
-                throw new Exception("Error",ex);
+                _logger.LogError("An unexpected error occurred while processing the request: {@ErrorMessage}", ex.Message);
+                return StatusCode(500, "An unexpected error occurred while processing the request. Please try again later.");
             }
+            
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PensionManagementPensionerService.Models.Context;
 using PensionManagementPensionerService.Models.Repository.Interfaces;
+using static PensionManagementPensionerService.ExceptionalHandling.PensionerServiceException;
 
 namespace PensionManagementPensionerService.Models.Repository.Implementation
 {
@@ -35,7 +36,7 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
         public void DeleteGuardianById(Guid guardianId)
         {
             var result = _appDbContext.GuardianDetails.FirstOrDefault(id => id.GuardianId == guardianId);
-            _appDbContext.GuardianDetails.Remove(result);
+            _appDbContext.GuardianDetails.Remove(result);  
             _appDbContext.SaveChanges();
         }
 
@@ -52,8 +53,6 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
         public async Task<GuardianDetails> UpdateGuardianById(Guid guardianId, GuardianDetails guardianDetails)
         {
             var result = await _appDbContext.GuardianDetails.FirstOrDefaultAsync(id => id.GuardianId == guardianId);
-            if (result != null)
-            {
                 result.GuardianName = guardianDetails.GuardianName;
                 result.Relation = guardianDetails.Relation;
                 result.PhoneNumber = guardianDetails.PhoneNumber;
@@ -62,27 +61,13 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
                 result.DateOfBirth = guardianDetails.DateOfBirth;
                 await _appDbContext.SaveChangesAsync();
                 return result;
-            }
-            return null;
+
         }
 
         public async Task<Guid?> GetGuadianIdByPensionerId(Guid pensionerId)
-        {
-            try
-            {
+        { 
                 var result = await _appDbContext.GuardianDetails.FirstOrDefaultAsync(g => g.PensionerId == pensionerId);
-                if (result != null)
-                {
-                    return result.GuardianId;
-                }
-                return null;
-            }
-
-            catch (Exception ex)
-            {
-
-                throw new Exception("Error");
-            }
+                return result.GuardianId;
         }
     }
 }

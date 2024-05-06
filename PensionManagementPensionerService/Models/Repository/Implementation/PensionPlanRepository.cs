@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PensionManagementPensionerService.Models.Context;
 using PensionManagementPensionerService.Models.Repository.Interfaces;
+using static PensionManagementPensionerService.ExceptionalHandling.PensionerServiceException;
 
 namespace PensionManagementPensionerService.Models.Repository.Implementation
 {
@@ -50,8 +51,6 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
         public async Task<PensionPlanDetails> UpdatePensionPlanById(Guid pensionPlanId, PensionPlanDetails pensionPlanDetails)
         {
             var result = await _appDbContext.PensionPlanDetails.FirstOrDefaultAsync(id => id.PensionPlanId == pensionPlanId);
-            if (result != null)
-            {
                result.PensionPlanName = pensionPlanDetails.PensionPlanName;
                result.Amount = pensionPlanDetails.Amount;  
                result.EndDate = pensionPlanDetails.EndDate;
@@ -59,9 +58,6 @@ namespace PensionManagementPensionerService.Models.Repository.Implementation
                result.PensionDetails = pensionPlanDetails.PensionDetails;
                await _appDbContext.SaveChangesAsync();
                return result;
-
-            }
-            return null;
         }
     }
 }
