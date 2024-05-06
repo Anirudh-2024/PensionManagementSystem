@@ -7,6 +7,7 @@ using PensionManagementUserLoginService.Models.Repository.Implementation;
 using PensionManagementUserLoginService.Models.Repository.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Serilog;
 
 namespace PensionManagementUserLoginService
 {
@@ -17,6 +18,15 @@ namespace PensionManagementUserLoginService
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            var Logger = new LoggerConfiguration()
+
+               .WriteTo.File(@"C:\logs\log.txt", rollingInterval: RollingInterval.Minute)
+
+               .CreateLogger();
+            builder.Logging.AddConsole();
+            builder.Logging.ClearProviders();
+            builder.Logging.AddSerilog(Logger);
+
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

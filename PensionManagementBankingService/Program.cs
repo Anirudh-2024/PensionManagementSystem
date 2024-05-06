@@ -4,6 +4,7 @@ using PensionManagementBankingService.AutoMapper;
 using PensionManagementBankingService.Models.Context;
 using PensionManagementBankingService.Models.Repository.Implementation;
 using PensionManagementBankingService.Models.Repository.Interfaces;
+using Serilog;
 
 namespace PensionManagementBankingService
 {
@@ -14,6 +15,16 @@ namespace PensionManagementBankingService
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            var Logger = new LoggerConfiguration()
+                
+                .WriteTo.File(@"C:\logs\log.txt", rollingInterval: RollingInterval.Minute)
+                
+                .CreateLogger();
+            builder.Logging.AddConsole();
+            builder.Logging.ClearProviders();
+            builder.Logging.AddSerilog(Logger);
+
+
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
