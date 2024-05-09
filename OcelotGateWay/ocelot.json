@@ -14,7 +14,7 @@
         }
       ],
       "UpstreamPathTemplate": "/gateway/banking",
-      "UpstreamHttpMethod": [ "POST", "PUT", "GET" ]
+      "UpstreamHttpMethod": [ "POST",  "GET" ]
     },
     {
 
@@ -27,7 +27,7 @@
         }
       ],
       "UpstreamPathTemplate": "/gateway/banking/{bankId}",
-      "UpstreamHttpMethod": [ "GET", "DELETE" ]
+      "UpstreamHttpMethod": [ "GET", "DELETE", "PUT" ]
     },
     {
 
@@ -54,7 +54,7 @@
         }
       ],
       "UpstreamPathTemplate": "/gateway/guardian",
-      "UpstreamHttpMethod": [ "POST", "PUT", "GET" ]
+      "UpstreamHttpMethod": [ "POST", "GET" ]
     },
     {
 
@@ -67,7 +67,7 @@
         }
       ],
       "UpstreamPathTemplate": "/gateway/guardian/{guardianId}",
-      "UpstreamHttpMethod": [ "GET", "DELETE" ]
+      "UpstreamHttpMethod": [ "GET", "DELETE", "PUT" ]
     },
     {
 
@@ -94,7 +94,7 @@
         }
       ],
       "UpstreamPathTemplate": "/gateway/pensioner",
-      "UpstreamHttpMethod": [ "POST", "PUT", "GET" ]
+      "UpstreamHttpMethod": [ "POST", "GET"]
     },
     {
 
@@ -107,7 +107,7 @@
         }
       ],
       "UpstreamPathTemplate": "/gateway/pensioner/{pensionerId}",
-      "UpstreamHttpMethod": [ "GET", "DELETE" ]
+      "UpstreamHttpMethod": [ "GET", "DELETE", "PUT" ]
     },
     {
 
@@ -133,7 +133,7 @@
         }
       ],
       "UpstreamPathTemplate": "/gateway/pensionPlan",
-      "UpstreamHttpMethod": [ "POST", "PUT", "GET" ]
+      "UpstreamHttpMethod": [ "POST", "GET" ]
     },
     {
 
@@ -146,7 +146,7 @@
         }
       ],
       "UpstreamPathTemplate": "/gateway/pensionPlan/{pensionPlanId}",
-      "UpstreamHttpMethod": [ "GET", "DELETE" ]
+      "UpstreamHttpMethod": [ "GET", "DELETE", "PUT" ]
     },
 
     {

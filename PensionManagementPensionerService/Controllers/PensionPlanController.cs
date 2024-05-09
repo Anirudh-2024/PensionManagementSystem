@@ -84,20 +84,10 @@ namespace PensionManagementPensionerService.Controllers
             try
             {
                 _logger.LogInformation("Attempting to add all pension plan details.");
-                var existingdetails = _pensionPlanRepository.GetPensionPlanById(pensionPlanDetails.PensionPlanId);
-                if (existingdetails != null)
-                {
-                    throw new PensionerServiceException("A pension Plan with the same details already exists.");
-                }
                 var result = await _pensionPlanRepository.AddPensionPlan(pensionPlanDetails);
                 _logger.LogInformation("Successfully added pension plan details {@result}", result.PensionPlanId);
                 return Ok(result);
 
-            }
-            catch (PensionerServiceException ex)
-            {
-                _logger.LogError("Attempted to add a duplicate record");
-                return StatusCode(409, ex.Message);
             }
             catch (Exception ex)
 

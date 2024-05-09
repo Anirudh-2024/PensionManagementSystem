@@ -85,20 +85,10 @@ namespace PensionManagementPensionerService.Controllers
             try
             {
                 _logger.LogInformation("Attempting to add guardian details.");
-                var existingdetails = _guardianRepository.GetGuadianIdByPensionerId(guardianDetails.PensionerId);
-                if (existingdetails != null)
-                {
-                    throw new PensionerServiceException("A guardian with the same details already exists.");
-                }
                 GuardianDetails request = _mapper.Map<GuardianDetails>(guardianDetails);
                 var result = await _guardianRepository.AddGuardian(request);
                 _logger.LogInformation("Successfully added guardian details : {@result}", result.GuardianId);
                 return Ok(_mapper.Map<GuardianResponseDTO>(result));
-            }
-            catch (PensionerServiceException ex)
-            {
-                _logger.LogError("A guardian with the same details already exists.");
-                return StatusCode(409, ex.Message);
             }
             catch (Exception ex)
             {
@@ -108,7 +98,7 @@ namespace PensionManagementPensionerService.Controllers
 
         }
 
-        [HttpPut]
+        [HttpPut("{guardianId}")]
         public async Task<IActionResult> UpdateGuardianById(Guid guardianId, [FromBody] GuardianRequestDTO guardianDetails)
         {
             try
