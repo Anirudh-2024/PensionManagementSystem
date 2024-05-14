@@ -112,22 +112,11 @@ namespace PensionManagementPensionerService.Controllers
             try
             {
                 _logger.LogInformation("Attempting to add pensioner details.");
-                var existingdetails = _pensionerRepository.GetPensionerIdById(pensionerDetails.Id);
-                if (existingdetails != null)
-                {
-                    throw new PensionerServiceException("A pensioner with the same details already exists.");
-                }
                 PensionerDetails request = _mapper.Map<PensionerDetails>(pensionerDetails);
                 var result = await _pensionerRepository.AddPensionerDetails(request);
                 _logger.LogInformation("Successfully added pensioner details. {@result}", result.PensionerId);
                 return Ok(_mapper.Map<PensionResponseDTO>(result));
 
-            }
-            catch (PensionerServiceException ex)
-            {
-                _logger.LogError("A pensioner with the same details already exists.");
-                return StatusCode(409, ex.Message);
-               
             }
             catch (Exception ex)
             {
@@ -137,7 +126,7 @@ namespace PensionManagementPensionerService.Controllers
 
         }
 
-        [HttpPut]
+        [HttpPut("{pensionerId}")]
         public async Task<IActionResult> UpdatePensionerDetailsById(Guid pensionerId, [FromBody] PensionerRequestDTO pensionerDetails)
         {
             try
